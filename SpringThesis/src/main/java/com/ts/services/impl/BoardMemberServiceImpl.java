@@ -4,12 +4,19 @@
  */
 package com.ts.services.impl;
 
+import com.ts.pojo.Board;
 import com.ts.pojo.BoardMember;
 import com.ts.pojo.BoardMemberPK;
+import com.ts.pojo.Users;
 import com.ts.repositories.BoardMemberRepository;
+import com.ts.repositories.BoardRepository;
+import com.ts.repositories.UsersRepository;
 import com.ts.services.BoardMemberService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,6 +28,10 @@ public class BoardMemberServiceImpl implements BoardMemberService {
 
     @Autowired
     private BoardMemberRepository repo;
+    @Autowired
+    private BoardRepository boardRepo;
+    @Autowired
+    private UsersRepository usersRepo;
 
     @Override
     public void addBoardMember(BoardMember member) {
@@ -63,4 +74,32 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         }
         this.repo.removeBoardMember(boardId, lecturerId);
     }
+
+    @Override
+    public BoardMember add(Map<String, String> payload) {
+            String boardIdStr=payload.get("boardId");
+            String lecturerIdStr=payload.get("lecturerId");
+            String role = payload.get("roleInBoard");
+        
+            int boardId = Integer.parseInt(boardIdStr);
+            int lecturerId = Integer.parseInt(lecturerIdStr);
+
+            // Lấy thực thể Board và Users từ ID
+            Board board = boardRepo.getBoardById(boardId);
+            Users lecturer = usersRepo.getUserById(lecturerId);
+            if(board == null )
+                throw new IllegalArgumentException("Không tồn tại boardId ");
+            if(lecturer == null)
+                throw new IllegalArgumentException("Không tồn tại lectureId ");
+            // Tạo đối tượng BoardMember
+            BoardMember member = new BoardMember();
+            member.setBoard(board);
+            member.setUsers(lecturer);
+            member.setRoleInBoard(role);
+            member.setBoardMemberPK(new BoardMemberPK(boardId, lecturerId));
+            this.addBoardMember(member);
+            return member;
+    }
+
+   
 }

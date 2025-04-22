@@ -35,10 +35,11 @@ public class UsersRepositoryImpl implements UsersRepository {
     @Override
     public Users getUserByUsername(String username) {
         Session s = this.factory.getObject().getCurrentSession();
-        Query query = s.createNamedQuery("Users.findByUsername", Users.class);
-        query.setParameter("username", username);
+        List<Users> result = s.createNamedQuery("Users.findByUsername", Users.class)
+                .setParameter("username", username)
+                .getResultList();
 
-        return (Users) query.getSingleResult();
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class UsersRepositoryImpl implements UsersRepository {
         } else {
             s.merge(u);
         }
-        s.flush();      
+        s.flush();
         s.refresh(u);
 
         return u;
@@ -84,24 +85,25 @@ public class UsersRepositoryImpl implements UsersRepository {
     @Override
     public List<Users> getAllUsersRoleLecturer() {
         Session s = this.factory.getObject().getCurrentSession();
-        
+
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<Users> query = builder.createQuery(Users.class);
         Root<Users> root = query.from(Users.class);
         query.select(root).where(builder.equal(root.get("role"), "lecturer"));
-        
+
         Query<Users> q = s.createQuery(query);
         return q.getResultList();
     }
+
     @Override
     public List<Users> getAllUsersRoleStudent() {
         Session s = this.factory.getObject().getCurrentSession();
-        
+
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<Users> query = builder.createQuery(Users.class);
         Root<Users> root = query.from(Users.class);
         query.select(root).where(builder.equal(root.get("role"), "student"));
-        
+
         Query<Users> q = s.createQuery(query);
         return q.getResultList();
     }

@@ -4,7 +4,7 @@
  */
 package com.ts.services;
 
-import com.ts.pojo.BoardMember;
+import com.ts.pojo.Criteria;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +12,10 @@ import java.util.Map;
  *
  * @author Lenovo
  */
-public interface BoardMemberService {
-    void addBoardMember(BoardMember member);
-    BoardMember add(Map<String,String> payload);
-    List<BoardMember> getBoardMembersByBoardId(int boardId);
-    void removeBoardMember(int boardId,int lectureId);
+public interface CriteriaService {
+    List<Criteria> getAll();
+    Criteria getById(int id);
+    Criteria add(Map<String, String> payload);
+    Criteria update(int id, Map<String, String> payload);
+    void delete(int id);
 }

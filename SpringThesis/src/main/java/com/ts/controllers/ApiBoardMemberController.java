@@ -34,37 +34,11 @@ public class ApiBoardMemberController {
 
     @Autowired
     private BoardMemberService boardMemberService;
-    @Autowired
-    private BoardService boardService;
-    @Autowired
-    private UsersService usersService;
 
     @PostMapping("/board-members")
     public ResponseEntity<?> addBoardMember(@RequestBody Map<String, String> payload) {
         try {
-            int boardId = Integer.parseInt(payload.get("boardId"));
-            int lecturerId = Integer.parseInt(payload.get("lecturerId"));
-            String role = payload.get("roleInBoard");
-
-            // Lấy thực thể Board và Users từ ID
-            Board board = boardService.getBoardById(boardId);
-            Users lecturer = usersService.getUserById(lecturerId);
-
-            if (board == null || lecturer == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("error", "Board hoặc Lecturer không tồn tại"));
-            }
-
-            // Tạo đối tượng BoardMember
-            BoardMember member = new BoardMember();
-            member.setBoard(board);
-            member.setUsers(lecturer);
-            member.setRoleInBoard(role);
-            member.setBoardMemberPK(new BoardMemberPK(boardId, lecturerId));
-
-            // Gọi service để kiểm tra & lưu
-            boardMemberService.addBoardMember(member);
-
+            BoardMember member = this.boardMemberService.add(payload);
             return new ResponseEntity<>(member, HttpStatus.CREATED);
         } catch (NumberFormatException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", "ID không hợp lệ"));

@@ -93,7 +93,17 @@ public class UsersServiceImpl implements UsersService {
         }
 
         if (phone == null || phone.trim().isEmpty()) {
-            throw new IllegalArgumentException("Số điện thoại không được để trống");
+            throw new IllegalArgumentException("Phone không được để trống");
+        }
+        if (role == null || role.trim().isEmpty()) {
+            throw new IllegalArgumentException("Role không được để trống");
+        }
+        if (this.repo.getUserByUsername(username) != null) {
+            throw new IllegalArgumentException("Username đã tồn tại");
+        }
+        List<String> validRoles = List.of("MINISTRY", "LECTURER", "STUDENT");
+        if (!validRoles.contains(role.toUpperCase())) {
+            throw new IllegalArgumentException("Role phải là MINISTRY, LECTURER, hoặc STUDENT.");
         }
 
         u.setFirstName(firstName);
