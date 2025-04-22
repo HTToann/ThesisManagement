@@ -33,7 +33,7 @@ public class ThesisGrade implements Serializable {
     @EmbeddedId
     protected ThesisGradePK thesisGradePK;
     @Column(name = "score")
-    private Integer score;
+    private Double score;
     @JoinColumn(name = "board_id", referencedColumnName = "board_id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Board board;
@@ -66,11 +66,11 @@ public class ThesisGrade implements Serializable {
         this.thesisGradePK = thesisGradePK;
     }
 
-    public Integer getScore() {
+    public Double getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Double score) {
         this.score = score;
     }
 

@@ -4,7 +4,7 @@
  */
 package com.ts.services;
 
-import com.ts.pojo.BoardMember;
+import com.ts.pojo.ThesisLecturer;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +12,9 @@ import java.util.Map;
  *
  * @author Lenovo
  */
-public interface BoardMemberService {
-    void addBoardMember(BoardMember member);
-    BoardMember add(Map<String,String> payload);
-    List<BoardMember> getBoardMembersByBoardId(int boardId);
-    void removeBoardMember(int boardId,int lectureId);
+public interface ThesisLecturerService {
+    void add(Map<String,String> payload);
+    List<ThesisLecturer> getByThesisId(int thesisId);
+    void delete(Map<String, String> payload) ;
+    void updateLecturer(Map<String, String> payload);
 }

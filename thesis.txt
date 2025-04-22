@@ -61,7 +61,7 @@ CREATE TABLE thesis_grade (
     thesis_id    INT NOT NULL,
     lecturer_id  INT NOT NULL,
     criteria_id  INT NOT NULL,
-    score        INT DEFAULT 0,
+    score        double DEFAULT 0,
     PRIMARY KEY (board_id, thesis_id, lecturer_id, criteria_id),
     FOREIGN KEY (board_id)
       REFERENCES board(board_id)
