@@ -1,0 +1,104 @@
+CREATE DATABASE IF NOT EXISTS thesis
+  CHARACTER SET utf8mb4 
+  COLLATE utf8mb4_unicode_ci;
+USE thesis;
+
+CREATE TABLE users (
+    user_id    INT AUTO_INCREMENT PRIMARY KEY,
+    username   VARCHAR(50)  NOT NULL UNIQUE,
+    first_name NVARCHAR(50) NOT NULL,
+    last_name  NVARCHAR(50) NOT NULL,
+    password   VARCHAR(200) NOT NULL,
+    email      VARCHAR(100) NOT NULL,
+    phone      VARCHAR(20) NOT NULL,
+    avatar     VARCHAR(255) NOT NULL,
+    active     BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    role       ENUM('MINISTRY','LECTURER','STUDENT') NOT NULL DEFAULT 'STUDENT'
+) ENGINE=InnoDB;
+
+-- Thông tin hội đồng (board)
+CREATE TABLE board (
+    board_id   INT AUTO_INCREMENT PRIMARY KEY,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_locked  BOOLEAN DEFAULT FALSE
+) ENGINE=InnoDB;
+
+CREATE TABLE board_member (
+    board_id      INT NOT NULL,
+    lecturer_id   INT NOT NULL,
+    role_in_board ENUM('CHAIRMAIN','SECRETARY','COUNTER','MEMBERS') NOT NULL DEFAULT 'MEMBERS',
+    PRIMARY KEY (board_id, lecturer_id),
+    FOREIGN KEY (board_id) 
+      REFERENCES board(board_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT,
+    FOREIGN KEY (lecturer_id) 
+      REFERENCES users(user_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE thesis (
+    thesis_id   INT AUTO_INCREMENT PRIMARY KEY,
+    title       NVARCHAR(255) NOT NULL,
+    description NVARCHAR(500),
+    year        INT NOT NULL,
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_locked   BOOLEAN DEFAULT FALSE,
+    board_id    INT,
+    FOREIGN KEY (board_id)
+      REFERENCES board(board_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE criteria (
+    criteria_id INT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    max_score   INT NOT NULL DEFAULT 10
+) ENGINE=InnoDB;
+
+CREATE TABLE thesis_grade (
+    board_id     INT NOT NULL,
+    thesis_id    INT NOT NULL,
+    lecturer_id  INT NOT NULL,
+    criteria_id  INT NOT NULL,
+    score        INT DEFAULT 0,
+    PRIMARY KEY (board_id, thesis_id, lecturer_id, criteria_id),
+    FOREIGN KEY (board_id)
+      REFERENCES board(board_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT,
+    FOREIGN KEY (thesis_id)
+      REFERENCES thesis(thesis_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT,
+    FOREIGN KEY (lecturer_id)
+      REFERENCES users(user_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT,
+    FOREIGN KEY (criteria_id)
+      REFERENCES criteria(criteria_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE thesis_lecturer (
+    thesis_id    INT NOT NULL,
+    lecturer_id  INT NOT NULL,
+    lecture_role ENUM('MAIN_ADVISOR','CO_ADVISOR') NOT NULL DEFAULT 'MAIN_ADVISOR',
+    PRIMARY KEY (thesis_id, lecturer_id),
+    FOREIGN KEY (thesis_id)
+      REFERENCES thesis(thesis_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT,
+    FOREIGN KEY (lecturer_id)
+      REFERENCES users(user_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE student (
+	id  INT AUTO_INCREMENT PRIMARY KEY,
+    user_id   INT NOT NULL,
+    major     NVARCHAR(255) DEFAULT NULL,
+    thesis_id INT DEFAULT NULL,
+    FOREIGN KEY (user_id)
+      REFERENCES users(user_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT,
+    FOREIGN KEY (thesis_id)
+      REFERENCES thesis(thesis_id)
+      ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB;
