@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="my_persistence_unit">
+    <class>com.ts.pojo.Board</class>
+    <class>com.ts.pojo.ThesisGrade</class>
+    <class>com.ts.pojo.Users</class>
+    <class>com.ts.pojo.Criteria</class>
+    <class>com.ts.pojo.Thesis</class>
+    <class>com.ts.pojo.ThesisLecturer</class>
+    <class>com.ts.pojo.Student</class>
+    <class>com.ts.pojo.BoardMember</class>
+  </persistence-unit>
+</persistence>
