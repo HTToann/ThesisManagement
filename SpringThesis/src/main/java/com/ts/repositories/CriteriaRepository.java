@@ -14,6 +14,7 @@ import java.util.List;
 public interface CriteriaRepository {
     List<Criteria> getAll();
     Criteria getById(int id);
+    Criteria getByName(String name);
     Criteria add(Criteria c);
     Criteria update(Criteria c);
     void delete(int id);

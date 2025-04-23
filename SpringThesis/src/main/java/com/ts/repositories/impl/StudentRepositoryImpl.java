@@ -6,6 +6,9 @@ package com.ts.repositories.impl;
 
 import com.ts.pojo.Student;
 import com.ts.repositories.StudentRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +43,40 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     @Override
     public Student getStudentByUserId(int userId) {
-         Session session = this.factory.getObject().getCurrentSession();
-         Student s = session.get(Student.class, userId);
-         return s;
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+        Root<Student> root = cq.from(Student.class);
+        cq.select(root).where(cb.equal(root.get("userId").get("userId"), userId));
+        return session.createQuery(cq).uniqueResult();
     }
 
     @Override
     public void deleleStudent(int userId) {
+        Session session = factory.getObject().getCurrentSession();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+        Root<Student> root = cq.from(Student.class);
+
+        cq.select(root).where(cb.equal(root.get("users").get("userId"), userId));
+
+        Student s = session.createQuery(cq).uniqueResult();
+
+        session.remove(s);
+
+    }
+
+    @Override
+    public Student getByThesisId(int thesisId) {
         Session session = this.factory.getObject().getCurrentSession();
-           Student s = session.get(Student.class, userId);
-           session.remove(s);
-           
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+        Root<Student> root = cq.from(Student.class);
+
+        cq.select(root).where(cb.equal(root.get("thesisId").get("thesisId"), thesisId));
+
+        return session.createQuery(cq).uniqueResult();
+
     }
 }

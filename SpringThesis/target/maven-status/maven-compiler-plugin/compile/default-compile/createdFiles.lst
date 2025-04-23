@@ -13,6 +13,8 @@ com\ts\services\UsersService.class
 com\ts\services\impl\UsersServiceImpl.class
 com\ts\pojo\Board.class
 com\ts\repositories\impl\CriteriaRepositoryImpl.class
+com\ts\services\impl\EmailServiceImpl.class
+com\ts\services\EmailService.class
 com\ts\services\ThesisGradeService.class
 com\ts\repositories\ThesisRepository.class
 com\ts\controllers\ApiThesisLecturerController.class
@@ -38,6 +40,7 @@ com\ts\services\CriteriaService.class
 com\ts\services\StudentService.class
 com\ts\repositories\impl\ThesisLecturerRepositoryImpl.class
 com\ts\configs\SecurityWebApplicationInitializer.class
+com\ts\configs\MailSenderConfig.class
 com\ts\controllers\ApiThesisController.class
 com\ts\services\impl\BoardServiceImpl.class
 com\ts\pojo\ThesisLecturer.class

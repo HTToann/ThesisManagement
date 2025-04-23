@@ -17,8 +17,9 @@ import org.springframework.stereotype.Service;
  * @author Lenovo
  */
 @Service
-public class CriteriaServiceImpl implements CriteriaService{
-     @Autowired
+public class CriteriaServiceImpl implements CriteriaService {
+
+    @Autowired
     private CriteriaRepository repo;
 
     @Override
@@ -33,24 +34,34 @@ public class CriteriaServiceImpl implements CriteriaService{
 
     @Override
     public Criteria add(Map<String, String> payload) {
-        String name = payload.get("name");
+        String nameStr = payload.get("name");
         String maxScoreStr = payload.get("max_score");
-
-        if (name == null || name.trim().isEmpty())
+        String name=nameStr.trim();
+        if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Tên tiêu chí không được để trống.");
+        }
+
+        // Kiểm tra tiêu chí trùng tên
+        Criteria existing = repo.getByName(name.trim());
+        if (existing != null) {
+            throw new IllegalArgumentException("Tiêu chí với tên '" + name + "' đã tồn tại.");
+        }
 
         int maxScore;
         try {
-            maxScore = Integer.parseInt(maxScoreStr);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Điểm tối đa không hợp lệ.");
+            maxScore = Integer.parseInt(maxScoreStr.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("maxScore phải là một số nguyên hợp lệ.");
+        }
+        if (maxScore > 10) {
+            throw new IllegalArgumentException("Điểm tối đa không được lớn hơn 10.");
+        }
+        if (maxScore <= 0) {
+            throw new IllegalArgumentException("Điểm tối đa phải lớn hơn 0.");
         }
 
-        if (maxScore <= 0)
-            throw new IllegalArgumentException("Điểm tối đa phải lớn hơn 0.");
-
         Criteria c = new Criteria();
-        c.setName(name);
+        c.setName(name.trim());
         c.setMaxScore(maxScore);
 
         return repo.add(c);
@@ -59,23 +70,26 @@ public class CriteriaServiceImpl implements CriteriaService{
     @Override
     public Criteria update(int id, Map<String, String> payload) {
         Criteria c = repo.getById(id);
-        if (c == null)
+        if (c == null) {
             throw new IllegalArgumentException("Không tìm thấy tiêu chí.");
+        }
 
         if (payload.containsKey("name")) {
             String name = payload.get("name");
-            if (name == null || name.trim().isEmpty())
+            if (name == null || name.trim().isEmpty()) {
                 throw new IllegalArgumentException("Tên tiêu chí không được để trống.");
-            c.setName(name);
+            }
+            c.setName(name.trim());
         }
 
         if (payload.containsKey("max_score")) {
             try {
-                int maxScore = Integer.parseInt(payload.get("max_score"));
-                if (maxScore <= 0)
+                int maxScore = Integer.parseInt(payload.get("max_score").trim());
+                if (maxScore <= 0) {
                     throw new IllegalArgumentException("Điểm tối đa phải lớn hơn 0.");
+                }
                 c.setMaxScore(maxScore);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Điểm tối đa không hợp lệ.");
             }
         }
@@ -86,8 +100,9 @@ public class CriteriaServiceImpl implements CriteriaService{
     @Override
     public void delete(int id) {
         Criteria c = repo.getById(id);
-        if (c == null)
+        if (c == null) {
             throw new IllegalArgumentException("Không tìm thấy tiêu chí.");
+        }
         repo.delete(id);
     }
 }

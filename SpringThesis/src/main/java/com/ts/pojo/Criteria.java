@@ -4,6 +4,7 @@
  */
 package com.ts.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -49,6 +50,7 @@ public class Criteria implements Serializable {
     @Column(name = "max_score")
     private int maxScore;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "criteria")
+    @JsonIgnore
     private Set<ThesisGrade> thesisGradeSet;
 
     public Criteria() {

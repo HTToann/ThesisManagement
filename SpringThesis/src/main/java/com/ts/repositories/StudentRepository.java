@@ -14,6 +14,7 @@ import java.util.Map;
 public interface StudentRepository {
     void insertStudent(Student s);
     public Student updateStudent(Student s);
+    Student getByThesisId(int thesisId);
     Student getStudentByUserId(int userId);
     void deleleStudent(int userId);
 }
