@@ -28,9 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/criteria")
 @CrossOrigin
 public class ApiCriteriaController {
-    
+
     @Autowired
     private CriteriaService criteriaService;
+
     // GET /api/criteria
     @GetMapping
     public ResponseEntity<?> getAllCriteria() {
@@ -45,6 +46,10 @@ public class ApiCriteriaController {
             return new ResponseEntity<>(c, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi không xác định."));
         }
     }
 
@@ -56,6 +61,10 @@ public class ApiCriteriaController {
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi không xác định."));
         }
     }
 
@@ -67,6 +76,10 @@ public class ApiCriteriaController {
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi không xác định."));
         }
     }
 }

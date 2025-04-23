@@ -14,6 +14,7 @@ import java.util.List;
 public interface ThesisGradeRepository {
     void add(ThesisGrade tg);
     void update(ThesisGrade tg);
+    void delete(int boardId, int thesisId, int lecturerId, int criteriaId);
     List<ThesisGrade> getByThesisId(int thesisId);
     List<ThesisGrade> getByLecturerAndBoard(int lecturerId, int boardId);
     ThesisGrade getByCompositeKey(int boardId, int thesisId, int lecturerId, int criteriaId);

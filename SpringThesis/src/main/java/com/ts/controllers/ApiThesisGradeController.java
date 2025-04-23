@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/thesis-grades")
 @CrossOrigin
 public class ApiThesisGradeController {
-     @Autowired
+
+    @Autowired
     private ThesisGradeService thesisGradeService;
 
     // POST /api/thesis-grades: Ghi điểm
@@ -64,7 +66,19 @@ public class ApiThesisGradeController {
     // GET /api/thesis-grades?lecturer_id=...&board_id=...
     @GetMapping(params = {"lecturer_id", "board_id"})
     public ResponseEntity<?> getByLecturerAndBoard(@RequestParam("lecturer_id") int lecturerId,
-                                                   @RequestParam("board_id") int boardId) {
+            @RequestParam("board_id") int boardId) {
         return ResponseEntity.ok(thesisGradeService.getByLecturerAndBoard(lecturerId, boardId));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteGrade(@RequestBody Map<String, String> payload) {
+        try {
+            this.thesisGradeService.delete(payload);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Đã xảy ra lỗi"));
+        }
     }
 }

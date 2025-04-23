@@ -64,13 +64,13 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users insertUser(Map<String, String> params, MultipartFile avatar) {
         Users u = new Users();
-        String firstName = params.get("firstName");
-        String lastName = params.get("lastName");
-        String username = params.get("username");
-        String password = params.get("password");
-        String phone = params.get("phone");
-        String email = params.get("email");
-        String role = params.get("role");
+        String firstName = params.get("firstName").trim();
+        String lastName = params.get("lastName").trim();
+        String username = params.get("username").trim();
+        String password = params.get("password").trim();
+        String phone = params.get("phone").trim();
+        String email = params.get("email").trim();
+        String role = params.get("role").trim();
         String major = "";
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username không được để trống");
@@ -128,7 +128,6 @@ public class UsersServiceImpl implements UsersService {
                 Logger.getLogger(UsersServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.print("ZBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         Users savedUser = this.repo.addOrUpdate(u);
         if (role.equals("STUDENT")) {
             Student s = new Student();
@@ -160,19 +159,19 @@ public class UsersServiceImpl implements UsersService {
             throw new IllegalArgumentException("Không tìm thấy user có id = " + id);
         }
         if (params.containsKey("firstName")) {
-            u.setFirstName(params.get("firstName"));
+            u.setFirstName(params.get("firstName").trim());
         }
         if (params.containsKey("lastName")) {
-            u.setLastName(params.get("lastName"));
+            u.setLastName(params.get("lastName").trim());
         }
         if (params.containsKey("password")) {
-            u.setPassword(params.get("password"));
+            u.setPassword(params.get("password").trim());
         }
         if (params.containsKey("phone")) {
-            u.setPhone(params.get("phone"));
+            u.setPhone(params.get("phone").trim());
         }
         if (params.containsKey("email")) {
-            u.setEmail(params.get("email"));
+            u.setEmail(params.get("email").trim());
         }
         if (avatar != null && !avatar.isEmpty()) {
             try {

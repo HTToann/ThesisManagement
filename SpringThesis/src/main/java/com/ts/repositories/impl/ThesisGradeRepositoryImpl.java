@@ -23,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class ThesisGradeRepositoryImpl implements ThesisGradeRepository{
+public class ThesisGradeRepositoryImpl implements ThesisGradeRepository {
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -54,10 +55,10 @@ public class ThesisGradeRepositoryImpl implements ThesisGradeRepository{
         CriteriaQuery<ThesisGrade> cq = cb.createQuery(ThesisGrade.class);
         Root<ThesisGrade> root = cq.from(ThesisGrade.class);
         cq.select(root).where(
-            cb.and(
-                cb.equal(root.get("users").get("userId"), lecturerId),
-                cb.equal(root.get("board").get("boardId"), boardId)
-            )
+                cb.and(
+                        cb.equal(root.get("users").get("userId"), lecturerId),
+                        cb.equal(root.get("board").get("boardId"), boardId)
+                )
         );
         return session.createQuery(cq).getResultList();
     }
@@ -66,5 +67,12 @@ public class ThesisGradeRepositoryImpl implements ThesisGradeRepository{
     public ThesisGrade getByCompositeKey(int boardId, int thesisId, int lecturerId, int criteriaId) {
         Session session = factory.getObject().getCurrentSession();
         return session.get(ThesisGrade.class, new ThesisGradePK(boardId, thesisId, lecturerId, criteriaId));
+    }
+    @Override
+    public void delete(int boardId, int thesisId, int lecturerId, int criteriaId) {
+        Session session = factory.getObject().getCurrentSession();
+        ThesisGradePK pk = new ThesisGradePK(boardId, thesisId, lecturerId, criteriaId);
+        ThesisGrade tg = session.get(ThesisGrade.class, pk);
+        session.remove(tg);
     }
 }

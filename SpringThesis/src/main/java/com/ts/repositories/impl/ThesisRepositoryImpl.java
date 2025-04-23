@@ -63,6 +63,18 @@ public class ThesisRepositoryImpl implements ThesisRepository {
         Session s = this.factory.getObject().getCurrentSession();
         Thesis t = this.getThesisById(thesisId);
         s.remove(t);
-     }
+    }
 
+    @Override
+    public List<Thesis> getThesesByBoardId(int boardId) {
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Thesis> cq = cb.createQuery(Thesis.class);
+        Root<Thesis> root = cq.from(Thesis.class);
+
+        cq.select(root).where(cb.equal(root.get("boardId").get("boardId"), boardId));
+
+        Query<Thesis> query = session.createQuery(cq);
+        return query.getResultList();
+    }
 }

@@ -36,8 +36,8 @@ public class StudentServiceImpl implements StudentService {
         if (s == null) {
             throw new IllegalArgumentException("Không tìm thấy student có userId = " + userId);
         }
-        String major = payload.get("major");
-        String thesisIdStr = payload.get("thesisId");
+        String major = payload.get("major").trim();
+        String thesisIdStr = payload.get("thesisId").trim();
         if (major != null && !major.trim().isEmpty()) {
             s.setMajor(major);
         }

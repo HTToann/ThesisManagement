@@ -4,6 +4,7 @@
  */
 package com.ts.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -34,17 +35,26 @@ public class ThesisGrade implements Serializable {
     protected ThesisGradePK thesisGradePK;
     @Column(name = "score")
     private Double score;
+    
+    @JsonIgnore
     @JoinColumn(name = "board_id", referencedColumnName = "board_id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Board board;
+    
+    @JsonIgnore
     @JoinColumn(name = "criteria_id", referencedColumnName = "criteria_id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Criteria criteria;
+    
+    @JsonIgnore
     @JoinColumn(name = "thesis_id", referencedColumnName = "thesis_id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Thesis thesis;
+    
     @JoinColumn(name = "lecturer_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
+    @JsonIgnore
+
     private Users users;
 
     public ThesisGrade() {
@@ -130,5 +140,5 @@ public class ThesisGrade implements Serializable {
     public String toString() {
         return "com.ts.pojo.ThesisGrade[ thesisGradePK=" + thesisGradePK + " ]";
     }
-    
+
 }

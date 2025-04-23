@@ -5,8 +5,10 @@
 package com.ts.services.impl;
 
 import com.ts.pojo.Board;
+import com.ts.pojo.Student;
 import com.ts.pojo.Thesis;
 import com.ts.repositories.BoardRepository;
+import com.ts.repositories.StudentRepository;
 import com.ts.repositories.ThesisRepository;
 import com.ts.services.ThesisService;
 import java.util.List;
@@ -25,6 +27,8 @@ public class ThesisServiceImpl implements ThesisService {
     private ThesisRepository thesisRepo;
     @Autowired
     private BoardRepository boardRepo;
+    @Autowired
+    private StudentRepository studentRepo;
 
     @Override
     public Thesis getThesisById(int thesisId) {
@@ -49,11 +53,11 @@ public class ThesisServiceImpl implements ThesisService {
     public Thesis addThesis(Map<String, String> payload) {
         Thesis t = new Thesis();
 
-        String title = payload.get("title");
-        String description = payload.get("description");
-        String yearStr = payload.get("year");
+        String title = payload.get("title").trim();
+        String description = payload.get("description").trim();
+        String yearStr = payload.get("year").trim();
         int year = Integer.parseInt(yearStr);
-        String board_id = payload.get("board_id");
+        String board_id = payload.get("boardId").trim();
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title không được để trống");
         }
@@ -69,11 +73,32 @@ public class ThesisServiceImpl implements ThesisService {
             if (b == null) {
                 throw new IllegalArgumentException("Board không tồn tại");
             }
+
+            // 💡 Kiểm tra số lượng thesis đã thuộc về hội đồng này
+            List<Thesis> thesisList = thesisRepo.getThesesByBoardId(id);  // 👈 bạn cần thêm hàm này
+            if (thesisList.size() >= 5) {
+                throw new IllegalArgumentException("Hội đồng này đã được phân công tối đa 5 đề tài.");
+            }
             t.setBoardId(b);
         }
         t.setTitle(title);
         t.setYear(year);
-        return this.thesisRepo.addOrUpdate(t);
+        Thesis savedThesis = this.thesisRepo.addOrUpdate(t);
+// 🔹 Gắn sinh viên nếu có
+        String studentIdStr = payload.get("studentId");  // key đổi từ studentIds → studentId (dạng chuỗi)
+        if (studentIdStr != null && !studentIdStr.trim().isEmpty()) {
+            int studentId = Integer.parseInt(studentIdStr.trim());
+            Student s = studentRepo.getStudentByUserId(studentId);
+            if (s == null) {
+                throw new IllegalArgumentException("Không tìm thấy sinh viên với ID: " + studentId);
+            }
+
+            // Gán thesis cho sinh viên
+            s.setThesisId(savedThesis);
+            studentRepo.updateStudent(s);
+        }
+
+        return savedThesis;
     }
 
     @Override
@@ -82,10 +107,10 @@ public class ThesisServiceImpl implements ThesisService {
         if (t == null) {
             throw new IllegalArgumentException("Không tìm thấy đề tài.");
         }
-        String title = payload.get("title");
-        String description = payload.get("description");
-        String yearStr = payload.get("year");
-        String board_id = payload.get("board_id");
+        String title = payload.get("title").trim();
+        String description = payload.get("description").trim();
+        String yearStr = payload.get("year").trim();
+        String board_id = payload.get("board_id").trim();
 
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title không được để trống");

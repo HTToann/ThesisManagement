@@ -1,5 +1,6 @@
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\configs\DispatcherServletInit.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\configs\HibernateConfigs.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\configs\MailSenderConfig.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\configs\SecurityWebApplicationInitializer.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\configs\SpringSecurityConfigs.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\configs\ThymeleafConfig.java
@@ -45,9 +46,11 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\BoardMemberService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\BoardService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\CriteriaService.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\EmailService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\BoardMemberServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\BoardServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\CriteriaServiceImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\EmailServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\StudentServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisGradeServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisLecturerServiceImpl.java

@@ -6,6 +6,7 @@ package com.ts.services.impl;
 
 import com.ts.pojo.Thesis;
 import com.ts.pojo.ThesisLecturer;
+import com.ts.pojo.ThesisLecturerPK;
 import com.ts.pojo.Users;
 import com.ts.repositories.ThesisLecturerRepository;
 import com.ts.repositories.ThesisRepository;
@@ -34,9 +35,9 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
     @Override
     public void add(Map<String, String> payload) {
         try {
-            int thesisId = Integer.parseInt(payload.get("thesis_id"));
-            int lecturerId = Integer.parseInt(payload.get("lecturer_id"));
-            String role = payload.get("role");
+            int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
+            int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
+            String role = payload.get("role").trim();
 
             if (role == null || (!role.equals("MAIN_ADVISOR") && !role.equals("CO_ADVISOR"))) {
                 throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'MAIN_ADVISOR' hoặc 'CO_ADVISOR'.");
@@ -71,7 +72,8 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
             tl.setThesis(thesis);
             tl.setUsers(lecturer);
             tl.setLectureRole(role);
-
+// Bạn phải set cái PK
+            tl.setThesisLecturerPK(new ThesisLecturerPK(thesis.getThesisId(), lecturer.getUserId()));
             repo.add(tl);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Thesis ID hoặc Lecturer ID không hợp lệ.");
@@ -86,8 +88,8 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
     @Override
     public void delete(Map<String, String> payload) {
         try {
-            int thesisId = Integer.parseInt(payload.get("thesis_id"));
-            int lecturerId = Integer.parseInt(payload.get("lecturer_id"));
+            int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
+            int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
 
             ThesisLecturer tl = repo.getByCompositeKey(thesisId, lecturerId);
             if (tl == null) {
@@ -103,9 +105,9 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
     @Override
     public void updateLecturer(Map<String, String> payload) {
         try {
-            int thesisId = Integer.parseInt(payload.get("thesis_id"));
-            int oldLecturerId = Integer.parseInt(payload.get("old_lecturer_id"));
-            int newLecturerId = Integer.parseInt(payload.get("new_lecturer_id"));
+            int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
+            int oldLecturerId = Integer.parseInt(payload.get("old_lecturer_id").trim());
+            int newLecturerId = Integer.parseInt(payload.get("new_lecturer_id").trim());
 
             // Ràng buộc
             if (oldLecturerId == newLecturerId) {
@@ -129,7 +131,17 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
                 }
             }
 
-            repo.update(thesisId, oldLecturerId, newLecturerId);
+            // Xoá giảng viên cũ
+            repo.delete(thesisId, oldLecturerId);
+
+            // Tạo mới với giảng viên mới và role cũ
+            ThesisLecturer newTL = new ThesisLecturer();
+            newTL.setThesis(existing.getThesis());
+            newTL.setUsers(newLecturer);
+            newTL.setLectureRole(existing.getLectureRole());
+            newTL.setThesisLecturerPK(new ThesisLecturerPK(thesisId, newLecturerId));
+
+            repo.add(newTL);
 
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("ID không hợp lệ.");
