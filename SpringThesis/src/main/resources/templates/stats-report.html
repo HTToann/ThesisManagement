@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        /* Nhúng font Roboto hỗ trợ tiếng Việt */
+        @font-face {
+            font-family: 'Roboto';
+            src: url('fonts/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>BÁO CÁO THỐNG KÊ ĐIỂM KHÓA LUẬN</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ngành</th>
+                <th>Năm</th>
+                <th>Số lượng đề tài</th>
+                <th>Điểm trung bình</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${stats}">
+            <td th:text="${row.major}"></td>
+            <td th:text="${row.year}"></td>
+            <td th:text="${row.totalTheses}"></td>
+            <td th:text="${row.avgScore}"></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

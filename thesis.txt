@@ -14,7 +14,7 @@ CREATE TABLE users (
     avatar     VARCHAR(255) NOT NULL,
     active     BOOLEAN DEFAULT TRUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    role       ENUM('MINISTRY','LECTURER','STUDENT') NOT NULL DEFAULT 'STUDENT'
+    role       ENUM('ROLE_MINISTRY','ROLE_LECTURER','ROLE_STUDENT','ROLE_ADMIN') NOT NULL DEFAULT 'ROLE_STUDENT'
 ) ENGINE=InnoDB;
 
 -- Thông tin hội đồng (board)
@@ -27,7 +27,7 @@ CREATE TABLE board (
 CREATE TABLE board_member (
     board_id      INT NOT NULL,
     lecturer_id   INT NOT NULL,
-    role_in_board ENUM('CHAIRMAIN','SECRETARY','COUNTER','MEMBERS') NOT NULL DEFAULT 'MEMBERS',
+    role_in_board ENUM('ROLE_CHAIRMAIN','ROLE_SECRETARY','ROLE_COUNTER','ROLE_MEMBERS') NOT NULL DEFAULT 'ROLE_MEMBERS',
     PRIMARY KEY (board_id, lecturer_id),
     FOREIGN KEY (board_id) 
       REFERENCES board(board_id)
@@ -80,7 +80,7 @@ CREATE TABLE thesis_grade (
 CREATE TABLE thesis_lecturer (
     thesis_id    INT NOT NULL,
     lecturer_id  INT NOT NULL,
-    lecture_role ENUM('MAIN_ADVISOR','CO_ADVISOR') NOT NULL DEFAULT 'MAIN_ADVISOR',
+    lecture_role ENUM('ROLE_MAIN_ADVISOR','ROLE_CO_ADVISOR') NOT NULL DEFAULT 'ROLE_MAIN_ADVISOR',
     PRIMARY KEY (thesis_id, lecturer_id),
     FOREIGN KEY (thesis_id)
       REFERENCES thesis(thesis_id)

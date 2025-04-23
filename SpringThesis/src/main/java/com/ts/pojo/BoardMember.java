@@ -50,7 +50,7 @@ public class BoardMember implements Serializable {
     @PrePersist
     public void prePersist() {
         if (this.roleInBoard == null)
-            this.roleInBoard = "MEMBERS";
+            this.roleInBoard = "ROLE_MEMBERS";
     }
     public BoardMember() {
     }

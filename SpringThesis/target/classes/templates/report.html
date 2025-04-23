@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Roboto';
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h1>BÁO CÁO ĐIỂM KHÓA LUẬN TỐT NGHIỆP</h1>
+<p>Năm học: <span th:text="${year}"></span></p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Sinh viên</th>
+        <th>Ngành</th>
+        <th>Điểm trung bình</th>
+        <th>Giảng viên hướng dẫn</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="s : ${students}">
+        <td th:text="${s.name}">Tên SV</td>
+        <td th:text="${s.major}">CNTT</td>
+        <td th:text="${s.avgScore}">8.5</td>
+        <td th:text="${s.lecturer}">TS. Nguyễn Văn A</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

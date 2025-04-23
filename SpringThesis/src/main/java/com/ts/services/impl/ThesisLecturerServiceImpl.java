@@ -39,8 +39,8 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
             int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
             String role = payload.get("role").trim();
 
-            if (role == null || (!role.equals("MAIN_ADVISOR") && !role.equals("CO_ADVISOR"))) {
-                throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'MAIN_ADVISOR' hoặc 'CO_ADVISOR'.");
+            if (role == null || (!role.equals("ROLE_MAIN_ADVISOR") && !role.equals("ROLE_CO_ADVISOR"))) {
+                throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'ROLE_MAIN_ADVISOR' hoặc 'ROLE_CO_ADVISOR'.");
             }
 
             // Lấy đối tượng liên quan

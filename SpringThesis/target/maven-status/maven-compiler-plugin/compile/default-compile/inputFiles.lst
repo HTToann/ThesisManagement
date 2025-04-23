@@ -8,6 +8,7 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\configs\WebAp
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ApiBoardController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ApiBoardMemberController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ApiCriteriaController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ApiStatsController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ApiStudentController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ApiThesisController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ApiThesisGradeController.java
@@ -33,11 +34,13 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\BoardMemberRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\BoardRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\CriteriaRepositoryImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\StatsRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\StudentRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\ThesisGradeRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\ThesisLecturerRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\ThesisRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\UsersRepositoryImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\StatsRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\StudentRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\ThesisGradeRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\ThesisLecturerRepository.java
@@ -51,11 +54,15 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\BoardServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\CriteriaServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\EmailServiceImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\PdfExportServiceImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\StatsServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\StudentServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisGradeServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisLecturerServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\UsersServiceImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\PdfExportService.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\StatsService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\StudentService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\ThesisGradeService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\ThesisLecturerService.java

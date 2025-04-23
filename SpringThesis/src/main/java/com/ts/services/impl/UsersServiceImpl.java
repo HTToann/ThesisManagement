@@ -101,9 +101,9 @@ public class UsersServiceImpl implements UsersService {
         if (this.repo.getUserByUsername(username) != null) {
             throw new IllegalArgumentException("Username đã tồn tại");
         }
-        List<String> validRoles = List.of("MINISTRY", "LECTURER", "STUDENT");
+        List<String> validRoles = List.of("ROLE_ADMIN","ROLE_MINISTRY", "ROLE_LECTURER", "ROLE_STUDENT");
         if (!validRoles.contains(role.toUpperCase())) {
-            throw new IllegalArgumentException("Role phải là MINISTRY, LECTURER, hoặc STUDENT.");
+            throw new IllegalArgumentException("Role phải là ROLE_MINISTRY, ROLE_LECTURER, hoặc ROLE_STUDENT.");
         }
 
         u.setFirstName(firstName);
@@ -113,7 +113,7 @@ public class UsersServiceImpl implements UsersService {
         u.setPhone(phone);
         u.setEmail(email);
         u.setRole(role);
-        if (role.equals("STUDENT")) {
+        if (role.equals("ROLE_STUDENT")) {
             major = params.get("major");
             if (major == null || major.trim().isEmpty()) {
                 throw new IllegalArgumentException("Major không được để trống");
@@ -129,7 +129,7 @@ public class UsersServiceImpl implements UsersService {
             }
         }
         Users savedUser = this.repo.addOrUpdate(u);
-        if (role.equals("STUDENT")) {
+        if (role.equals("ROLE_STUDENT")) {
             Student s = new Student();
             s.setUserId(savedUser);
             s.setMajor(major);

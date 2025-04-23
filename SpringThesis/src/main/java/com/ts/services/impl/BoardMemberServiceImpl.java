@@ -50,10 +50,10 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         int lecturerId = member.getUsers().getUserId();
         String role = member.getRoleInBoard();
         List<BoardMember> existingMembers = repo.getBoardMembersByBoardId(boardId);
-        List<String> validRoles = List.of("CHAIRMAIN", "SECRETARY", "COUNTER", "MEMBERS");
+        List<String> validRoles = List.of("ROLE_CHAIRMAIN", "ROLE_SECRETARY", "ROLE_COUNTER", "ROLE_MEMBERS");
 
         if (!validRoles.contains(role)) {
-            throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ được chọn: CHAIRMAIN, SECRETARY, COUNTER, MEMBERS.");
+            throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ được chọn: ROLE_CHAIRMAIN, ROLE_SECRETARY, ROLE_COUNTER, ROLE_MEMBERS.");
         }
         if (existingMembers.size() >= 5) {
             throw new IllegalArgumentException("Hội đồng đã đủ 5 thành viên.");
