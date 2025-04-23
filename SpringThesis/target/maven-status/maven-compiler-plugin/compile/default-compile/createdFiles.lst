@@ -3,6 +3,7 @@ com\ts\configs\SpringSecurityConfigs.class
 com\ts\repositories\UsersRepository.class
 com\ts\controllers\UserController.class
 com\ts\pojo\Student.class
+com\ts\services\impl\StatsServiceImpl.class
 com\ts\repositories\ThesisGradeRepository.class
 com\ts\pojo\Users.class
 com\ts\repositories\ThesisLecturerRepository.class
@@ -12,10 +13,12 @@ com\ts\repositories\impl\BoardMemberRepositoryImpl.class
 com\ts\services\UsersService.class
 com\ts\services\impl\UsersServiceImpl.class
 com\ts\pojo\Board.class
+com\ts\controllers\ApiStatsController.class
 com\ts\repositories\impl\CriteriaRepositoryImpl.class
 com\ts\services\impl\EmailServiceImpl.class
 com\ts\services\EmailService.class
 com\ts\services\ThesisGradeService.class
+com\ts\services\StatsService.class
 com\ts\repositories\ThesisRepository.class
 com\ts\controllers\ApiThesisLecturerController.class
 com\ts\controllers\IndexController.class
@@ -27,6 +30,7 @@ com\ts\services\impl\StudentServiceImpl.class
 com\ts\pojo\BoardMemberPK.class
 com\ts\services\impl\ThesisLecturerServiceImpl.class
 com\ts\services\BoardMemberService.class
+com\ts\services\PdfExportService.class
 com\ts\services\BoardService.class
 com\ts\controllers\ApiBoardMemberController.class
 com\ts\controllers\ApiStudentController.class
@@ -44,12 +48,15 @@ com\ts\configs\MailSenderConfig.class
 com\ts\controllers\ApiThesisController.class
 com\ts\services\impl\BoardServiceImpl.class
 com\ts\pojo\ThesisLecturer.class
+com\ts\services\impl\PdfExportServiceImpl.class
 com\ts\repositories\impl\ThesisGradeRepositoryImpl.class
+com\ts\repositories\StatsRepository.class
 com\ts\configs\DispatcherServletInit.class
 com\ts\repositories\impl\StudentRepositoryImpl.class
 com\ts\services\impl\CriteriaServiceImpl.class
 com\ts\pojo\BoardMember.class
 com\ts\utils\JwtUtils.class
+com\ts\repositories\impl\StatsRepositoryImpl.class
 com\ts\springthesis\resources\JakartaEE11Resource.class
 com\ts\repositories\StudentRepository.class
 com\ts\pojo\ThesisGrade.class

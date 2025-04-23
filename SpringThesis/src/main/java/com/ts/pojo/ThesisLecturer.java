@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -45,6 +46,11 @@ public class ThesisLecturer implements Serializable {
     @ManyToOne(optional = false)
     private Users users;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.lectureRole == null)
+            this.lectureRole = "ROLE_MAIN_ADVISOR";
+    }
     public ThesisLecturer() {
     }
 

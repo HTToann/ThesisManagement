@@ -119,7 +119,7 @@ public class Users implements Serializable {
     @PrePersist
     public void prePersist() {
         if (this.role == null) {
-            this.role = "STUDENT";
+            this.role = "ROLE_STUDENT";
         }
         if (this.active == null) {
             this.active = true;
