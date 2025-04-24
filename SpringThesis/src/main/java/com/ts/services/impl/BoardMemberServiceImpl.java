@@ -44,6 +44,25 @@ public class BoardMemberServiceImpl implements BoardMemberService {
     @Autowired
     private EmailService emailService;
 
+    private void sendGmailToMember(BoardMember member,String role,int boardId) {
+        String email = member.getUsers().getEmail();
+        String subject = "Thông báo phân công vào hội đồng phản biện";
+        String content = String.format("""
+        Xin chào %s %s,
+
+        Bạn vừa được phân công làm %s trong hội đồng phản biện (Board ID: %d).
+
+        Trân trọng,
+        Hệ thống quản lý khóa luận.
+        """,
+                member.getUsers().getFirstName(),
+                member.getUsers().getLastName(),
+                role,
+                boardId
+        );
+
+        emailService.sendEmail(email, subject, content);
+    }
     @Override
     public void addBoardMember(BoardMember member) {
         int boardId = member.getBoard().getBoardId();
@@ -78,30 +97,30 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         }
 
         repo.addBoardMember(member);
-
+        sendGmailToMember(member,role,boardId);
 //        // Kiểm tra lại tổng số thành viên sau khi thêm (đảm bảo tối thiểu 3)
 //        List<BoardMember> updatedMembers = repo.getBoardMembersByBoardId(boardId);
 //        if (updatedMembers.size() < 3) {
 //            throw new IllegalArgumentException("Hội đồng phải có ít nhất 3 thành viên.");
 //        }
         // ✅ Gửi mail trước khi thêm (có thể đặt sau nếu cần đảm bảo persist thành công rồi mới gửi)
-        String email = member.getUsers().getEmail();
-        String subject = "Thông báo phân công vào hội đồng phản biện";
-        String content = String.format("""
-        Xin chào %s %s,
+//        String email = member.getUsers().getEmail();
+//        String subject = "Thông báo phân công vào hội đồng phản biện";
+//        String content = String.format("""
+//        Xin chào %s %s,
+//
+//        Bạn vừa được phân công làm %s trong hội đồng phản biện (Board ID: %d).
+//
+//        Trân trọng,
+//        Hệ thống quản lý khóa luận.
+//        """,
+//                member.getUsers().getFirstName(),
+//                member.getUsers().getLastName(),
+//                role,
+//                boardId
+//        );
 
-        Bạn vừa được phân công làm %s trong hội đồng phản biện (Board ID: %d).
-
-        Trân trọng,
-        Hệ thống quản lý khóa luận.
-        """,
-                member.getUsers().getFirstName(),
-                member.getUsers().getLastName(),
-                role,
-                boardId
-        );
-
-        emailService.sendEmail(email, subject, content);
+//        emailService.sendEmail(email, subject, content);
     }
 
     @Override

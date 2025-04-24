@@ -32,7 +32,7 @@ public class PdfExportServiceImpl implements PdfExportService {
 
     @Override
     public byte[] exportStatsToPdf(List<Map<String, Object>> statsData) {
-        Context context = new org.thymeleaf.context.Context();
+        Context context = new Context();
         context.setVariable("stats", statsData);
 
         // 2. Render HTML
@@ -60,6 +60,39 @@ public class PdfExportServiceImpl implements PdfExportService {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             renderer.createPDF(out);
             return out.toByteArray();
+        } catch (IOException ex) {
+            Logger.getLogger(PdfExportServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] exportBoardSummaryToPdf(List<Map<String, Object>> summaries, int year, String currentDate, int boardID) {
+        Context context = new Context();
+        context.setVariable("summaries", summaries);
+        context.setVariable("year", year);
+        context.setVariable("currentDate", currentDate);
+        context.setVariable("boardID", boardID);
+        String htmlContent = templateEngine.process("board-summary-pdf", context);
+
+        ITextRenderer renderer = new ITextRenderer();
+        try {
+            renderer.getFontResolver().addFont(
+                    getClass().getResource("/fonts/Roboto-VariableFont_wdth,wght.ttf").toString(),
+                    BaseFont.IDENTITY_H,
+                    BaseFont.EMBEDDED
+            );
+        } catch (DocumentException ex) {
+            Logger.getLogger(PdfExportServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PdfExportServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        renderer.setDocumentFromString(htmlContent);
+        renderer.layout();
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            renderer.createPDF(outputStream);
+            return outputStream.toByteArray();
         } catch (IOException ex) {
             Logger.getLogger(PdfExportServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
