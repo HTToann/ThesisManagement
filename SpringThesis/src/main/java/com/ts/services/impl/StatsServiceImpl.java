@@ -38,4 +38,9 @@ public class StatsServiceImpl implements StatsService {
         }
         return response;
     }
+
+    @Override
+    public List<Map<String, Object>> getGradesSummaryByBoardAndThesis(int boardId, int thesisId) {
+            return this.statsRepo.getGradesSummaryByBoardAndThesis(boardId, thesisId);
+    }
 }

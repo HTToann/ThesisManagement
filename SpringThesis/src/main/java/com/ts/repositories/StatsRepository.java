@@ -5,6 +5,7 @@
 package com.ts.repositories;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -12,4 +13,5 @@ import java.util.List;
  */
 public interface StatsRepository {
      List<Object[]> getThesisStatsByMajorAndYear();
+     List<Map<String, Object>> getGradesSummaryByBoardAndThesis(int boardId, int thesisId);
 }

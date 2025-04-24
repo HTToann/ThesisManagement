@@ -7,6 +7,7 @@ package com.ts.controllers;
 import com.ts.services.PdfExportService;
 import com.ts.services.StatsService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -70,6 +72,50 @@ public class ApiStatsController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
+        }
+    }
+//statsService.getGradesSummaryByBoardAndThesis(boardId, thesisId);
+
+    @GetMapping("/pdf/board-summary")
+    public ResponseEntity<byte[]> exportBoardSummary(
+            @RequestParam("board_id") int boardId,
+            @RequestParam("thesis_id") int thesisId) {
+        try {
+            List<Map<String, Object>> summaries = new ArrayList<>();
+            Map<String, Object> row1 = new HashMap<>();
+            row1.put("lecturerName", "Nguyễn Văn A");
+            row1.put("avgScore", 8.5);
+            row1.put("role", "ROLE_CHAIRMAIN");
+
+            Map<String, Object> row2 = new HashMap<>();
+            row2.put("lecturerName", "Trần Thị B");
+            row2.put("avgScore", 7.8);
+            row2.put("role", "ROLE_SECRETARY");
+
+            Map<String, Object> row3 = new HashMap<>();
+            row3.put("lecturerName", "Lê Văn C");
+            row3.put("avgScore", 9.0);
+            row3.put("role", "ROLE_COUNTER");
+
+            summaries.add(row1);
+            summaries.add(row2);
+            summaries.add(row3);
+            int year = java.time.LocalDate.now().getYear();
+            String currentDate = java.time.LocalDate.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            byte[] pdfBytes = pdfService.exportBoardSummaryToPdf(summaries,year,currentDate,boardId);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition
+                    .attachment()
+                    .filename("thong_ke_diem_hoi_dong.pdf")
+                    .build());
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

@@ -13,4 +13,5 @@ import java.util.Map;
  */
 public interface StatsService {
     List<Map<String, Object>> getStatsByMajorAndYear();
+    List<Map<String, Object>> getGradesSummaryByBoardAndThesis(int boardId, int thesisId);
 }

@@ -14,4 +14,5 @@ import java.util.Map;
  */
 public interface PdfExportService {
      byte[] exportStatsToPdf(List<Map<String, Object>> statsData);
+     byte[] exportBoardSummaryToPdf(List<Map<String, Object>> summaries, int year, String currentDate,int boardID);
 }
