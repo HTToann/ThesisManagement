@@ -81,7 +81,7 @@ public class BoardServiceImpl implements BoardService {
         if (b == null) {
             throw new IllegalArgumentException("Không tìm thấy board có id = " + boardId);
         }
-        String isLocked = params.get("isLocked").trim();
+        String isLocked = params.get("isLocked");
         if (isLocked.toUpperCase().trim().equals("TRUE")) {
             b.setIsLocked(Boolean.TRUE);
             // 🔒 Khóa tất cả các đề tài thuộc hội đồng này

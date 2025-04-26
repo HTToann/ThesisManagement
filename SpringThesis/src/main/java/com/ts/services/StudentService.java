@@ -14,6 +14,6 @@ import java.util.Map;
 public interface StudentService {
     void insertStudent(Student student);
     Student getStudentByUserId(int userID);
-    Student updateStudent(int userId, Map<String, String> payload);
-    void deleteStudent(int userId);
+    Student updateStudent(int id, Map<String, String> payload);
+    void deleteStudent(int id);
 }

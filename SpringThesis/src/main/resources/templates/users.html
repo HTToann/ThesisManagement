@@ -1,0 +1,112 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý Users</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
+
+    <main class="container mt-4 p-4 bg-light border rounded shadow">
+        <h2 class="mb-4 text-center text-primary">Quản lý người dùng</h2>
+        <form class="mb-3" th:action="@{/admin/users}" method="get">
+            <input type="text" class="form-control" name="kw" placeholder="Tìm theo tên người dùng" />
+        </form>
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Vai trò</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Khoa</th>
+                    <th>Avatar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="u : ${users}">
+                    <td th:text="${u.userId}"></td>
+                    <td th:text="${u.username}"></td>
+                    <td th:text="${u.lastName + ' ' + u.firstName}"></td>
+                    <td th:text="${u.email}"></td>
+                    <td th:text="${u.phone}"></td>
+                    <td th:text="${u.role}"></td>
+                    <td th:text="${#dates.format(u.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <span class="badge" th:classappend="${u.active} ? 'bg-success' : 'bg-danger'" th:text="${u.active} ? 'Kích hoạt' : 'Vô hiệu'"></span>
+                    </td>
+                    <td th:text="${u.facultyId}"></td>
+                    <td>
+                        <img th:src="@{${u.avatar}}" alt="avatar" class="img-thumbnail" width="60" height="60" />
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:attr="
+                                data-userid=${u.userId},
+                                data-username=${u.username},
+                                data-password=${u.password},
+                                data-firstname=${u.firstName},
+                                data-lastname=${u.lastName},
+                                data-email=${u.email},
+                                data-phone=${u.phone},
+                                data-role=${u.role},
+                                data-facultyid=${u.facultyId != null ? u.facultyId.facultyId : 0},
+                                data-avatar=${u.avatar}
+                                "
+                                onclick="editUserFromButton(this)">
+                            Sửa
+                        </button>                     
+                        <button class="btn btn-danger btn-sm" th:onclick="'deleteUser(' + ${u.userId} + ')'">Xoá</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-success mb-3" onclick="openAddUserModal()">➕ Thêm người dùng</button>
+        <div class="modal fade" id="UserModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="UserForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thêm người dùng</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="userId" />
+                            <input name="username" class="form-control mb-2" placeholder="Username" required />
+                            <input name="password" class="form-control mb-2" placeholder="Password" required />
+                            <input name="firstName" class="form-control mb-2" placeholder="Họ" required />
+                            <input name="lastName" class="form-control mb-2" placeholder="Tên" required />
+                            <input name="email" class="form-control mb-2" placeholder="Email" required />
+                            <input name="phone" class="form-control mb-2" placeholder="Số điện thoại" required />
+                            <select name="role" class="form-select mb-2">
+                                <option value="ROLE_STUDENT">Sinh viên</option>
+                                <option value="ROLE_LECTURER">Giảng viên</option>
+                                <option value="ROLE_MINISTRY">Quản lý</option>
+                                <option value="ROLE_ADMIN">Admin</option>
+                            </select>
+                            <select name="facultyId" class="form-select mb-2" required>
+                                <option value="">-- Chọn khoa --</option>
+                                <option th:each="f : ${faculty}" 
+                                        th:value="${f.facultyId}" 
+                                        th:text="${f.name}"></option>
+                            </select>
+                          <input type="file" name="avatar" id="avatarInput" accept="image/*" class="form-control mb-2" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/Users.js}"></script>
+</body>
+</html>

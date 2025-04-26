@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author Lenovo
  */
 @Controller
-public class UserController {
+public class LoginController {
     @GetMapping("/login")
     public String loginView() {
         return "login";

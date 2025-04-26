@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.ts.controllers;
+package com.ts.controllers.api;
 
+//import com.ts.controllers.*;
 import com.ts.pojo.Users;
 import com.ts.services.UsersService;
 import com.ts.utils.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
@@ -61,8 +63,9 @@ public class ApiUserController {
     @PostMapping("/users/login")
     public ResponseEntity<?> auth(@RequestBody Users u) {
         if (this.usersService.authenticate(u.getUsername(), u.getPassword())) {
+            Users user = usersService.getUserByUsername(u.getUsername());
             try {
-                String token = JwtUtils.generateToken(u.getUsername());
+                String token = JwtUtils.generateToken(user.getUsername(), user.getRole());
                 return ResponseEntity.ok().body(Collections.singletonMap("token", token));
             } catch (Exception e) {
                 return ResponseEntity.status(500).body("Lỗi khi tạo JWT");
@@ -80,16 +83,19 @@ public class ApiUserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") int id) {
-        Users u = usersService.getUserById(id);
-        if (u == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "User không tồn tại!"));
+        try {
+            Users u = usersService.getUserById(id);
+            if (u == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "User không tồn tại!"));
+            }
+            return ResponseEntity.ok(u);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Đã xảy ra lỗi"));
         }
-
-        return ResponseEntity.ok(u);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/secure/users/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") int id,
             @RequestParam Map<String, String> params,
             @RequestParam(value = "avatar", required = false) MultipartFile avatar
@@ -106,17 +112,35 @@ public class ApiUserController {
     }
 
     @GetMapping("/secure/users/get_role_lecturer")
-    public ResponseEntity<?> getAllRoleLecturer() {
+    public ResponseEntity<?> getAllRoleLecturer(HttpServletRequest request) {
+        String role = (String) request.getAttribute("role"); // Lấy role từ token đã validate trước đó
+
+       if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền"));
+        }
         return ResponseEntity.ok(this.usersService.getAllUsersRoleLecturer());
     }
+
     @GetMapping("/secure/users/get_role_student")
     public ResponseEntity<?> getAllRoleStudent() {
         return ResponseEntity.ok(this.usersService.getAllUsersRoleStudent());
     }
-    
-    @DeleteMapping("/secure/users/delete{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") int id) {
-        this.usersService.deleteUsers(id);
-        return ResponseEntity.noContent().build();
+
+    @DeleteMapping("/secure/users/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") int id, HttpServletRequest request) {
+        String role = (String) request.getAttribute("role"); // Lấy role từ token đã validate trước đó
+        try {
+            if (!"ROLE_ADMIN".equals(role)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("error", "Bạn không có quyền!"));
+            }
+
+            this.usersService.deleteUsers(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã có lỗi xảy ra"));
+        }
     }
 }

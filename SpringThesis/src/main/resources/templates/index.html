@@ -1,10 +1,16 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Trang chủ</title>
-    </head>
-    <body>
-        <h1>hello</h1>
-        <h1 th:text="${msg}"></h1>
-    </body>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
+    <main class="container mt-4 p-4 bg-light border rounded shadow">
+        <h2 class="mb-4 text-center text-primary">Chào mừng đến với hệ thống quản lý khóa luận</h2>
+        <p class="lead text-center">Sử dụng thanh điều hướng phía trên để truy cập các chức năng như Quản lý sinh viên, Đề tài, Hội đồng và chấm điểm.</p>
+    </main>
+    <div th:replace="base :: footer"></div>
+
+</body>
 </html>

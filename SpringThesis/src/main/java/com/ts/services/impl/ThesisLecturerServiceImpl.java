@@ -37,7 +37,7 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
         try {
             int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
             int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
-            String role = payload.get("role").trim();
+            String role = payload.get("role");
 
             if (role == null || (!role.equals("ROLE_MAIN_ADVISOR") && !role.equals("ROLE_CO_ADVISOR"))) {
                 throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'ROLE_MAIN_ADVISOR' hoặc 'ROLE_CO_ADVISOR'.");
@@ -71,7 +71,7 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
             ThesisLecturer tl = new ThesisLecturer();
             tl.setThesis(thesis);
             tl.setUsers(lecturer);
-            tl.setLectureRole(role);
+            tl.setLectureRole(role.trim());
 // Bạn phải set cái PK
             tl.setThesisLecturerPK(new ThesisLecturerPK(thesis.getThesisId(), lecturer.getUserId()));
             repo.add(tl);

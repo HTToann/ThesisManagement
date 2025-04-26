@@ -11,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -18,18 +20,26 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  *
  * @author Lenovo
  */
+//@NamedQuery(name = "Student.findByMajor", query = "SELECT s FROM Student s WHERE s.major = :major"
 @Entity
 @Table(name = "student")
 @NamedQueries({
     @NamedQuery(name = "Student.findAll", query = "SELECT s FROM Student s"),
     @NamedQuery(name = "Student.findById", query = "SELECT s FROM Student s WHERE s.id = :id"),
-    @NamedQuery(name = "Student.findByMajor", query = "SELECT s FROM Student s WHERE s.major = :major")})
+    })
 public class Student implements Serializable {
+
+    @JoinTable(name = "student_major", joinColumns = {
+        @JoinColumn(name = "student_id", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "major_id", referencedColumnName = "major_id")})
+    @ManyToMany
+    private Set<Major> majorSet;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,9 +47,9 @@ public class Student implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 255)
-    @Column(name = "major")
-    private String major;
+//    @Size(max = 255)
+//    @Column(name = "major")
+//    private String major;
     @JoinColumn(name = "thesis_id", referencedColumnName = "thesis_id")
     @ManyToOne
     private Thesis thesisId;
@@ -64,13 +74,13 @@ public class Student implements Serializable {
         this.id = id;
     }
 
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
-    }
+//    public String getMajor() {
+//        return major;
+//    }
+//
+//    public void setMajor(String major) {
+//        this.major = major;
+//    }
 
     public Thesis getThesisId() {
         return thesisId;
@@ -111,6 +121,14 @@ public class Student implements Serializable {
     @Override
     public String toString() {
         return "com.ts.pojo.Student[ id=" + id + " ]";
+    }
+
+    public Set<Major> getMajorSet() {
+        return majorSet;
+    }
+
+    public void setMajorSet(Set<Major> majorSet) {
+        this.majorSet = majorSet;
     }
     
 }

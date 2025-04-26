@@ -10,26 +10,36 @@
 </head>
 <body>
     <header th:fragment="header">
-            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" th:href="@{/}">eCommerce's Admin</a>
+                <a class="navbar-brand" th:href="@{/}">Thesis Admin</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="collapsibleNavbar">
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/}">Trang chủ</a>
-                        </li>    
-                        <li class="nav-item" >
-                            <a class="nav-link" th:href="@{/logout}" sec:authorize="isAuthenticated()">Đăng xuất</a>
-                        </li>
+                        <li class="nav-item"> <a class="nav-link" th:href="@{/}" sec:authorize="isAuthenticated()">Trang chủ</a></li>    
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/board}" sec:authorize="isAuthenticated()" >Board Management</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/board-members}"sec:authorize="isAuthenticated()">Board Members</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/criteria}"sec:authorize="isAuthenticated()">Criteria</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/faculty}"sec:authorize="isAuthenticated()">Faculty</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/major}"sec:authorize="isAuthenticated()">Major</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/student}"sec:authorize="isAuthenticated()">Student</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/thesis}"sec:authorize="isAuthenticated()">Thesis</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/thesis-grade}"sec:authorize="isAuthenticated()">Thesis Grades</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/thesis-lecturer}"sec:authorize="isAuthenticated()">Thesis Lecturers</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/users}"sec:authorize="isAuthenticated()">Users</a></li>
+                        <li class="nav-item" > <a class="nav-link" th:href="@{/logout}" sec:authorize="isAuthenticated()">Đăng xuất</a> </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
     <footer th:fragment="footer">
+         <div class="mt-4 p-5 bg-primary text-white rounded">
+            <h1>ThesisAdmin App</h1>
+            <p>Hoang Trong Toan &copy; 2025</p>
+        </div>
     </footer>
 </body>
 </html>

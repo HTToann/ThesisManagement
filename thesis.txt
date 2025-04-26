@@ -42,6 +42,7 @@ CREATE TABLE thesis (
     title       NVARCHAR(255) NOT NULL,
     description NVARCHAR(500),
     year        INT NOT NULL,
+    semester    NVARCHAR(50),
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     is_locked   BOOLEAN DEFAULT FALSE,
     board_id    INT,
@@ -102,3 +103,15 @@ CREATE TABLE student (
       REFERENCES thesis(thesis_id)
       ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
+
+CREATE TABLE faculty (
+    faculty_id   INT AUTO_INCREMENT PRIMARY KEY,
+    name         NVARCHAR(100) NOT NULL,
+    created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+ALTER TABLE users
+ADD COLUMN faculty_id INT,
+ADD FOREIGN KEY (faculty_id)
+  REFERENCES faculty(faculty_id)
+  ON DELETE SET NULL ON UPDATE CASCADE;

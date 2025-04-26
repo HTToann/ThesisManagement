@@ -2,10 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.ts.controllers;
+package com.ts.controllers.api;
 
+//import com.ts.controllers.*;
 import com.ts.pojo.Criteria;
 import com.ts.services.CriteriaService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Lenovo
  */
 @RestController
-@RequestMapping("/api/criteria")
+@RequestMapping("/api")
 @CrossOrigin
 public class ApiCriteriaController {
 
@@ -33,14 +35,19 @@ public class ApiCriteriaController {
     private CriteriaService criteriaService;
 
     // GET /api/criteria
-    @GetMapping
+    @GetMapping("/criteria")
     public ResponseEntity<?> getAllCriteria() {
         return ResponseEntity.ok(criteriaService.getAll());
     }
 
     // POST /api/criteria
-    @PostMapping
-    public ResponseEntity<?> createCriteria(@RequestBody Map<String, String> payload) {
+    @PostMapping("/secure/criteria")
+    public ResponseEntity<?> createCriteria(@RequestBody Map<String, String> payload, HttpServletRequest request) {
+        String role = (String) request.getAttribute("role");
+        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền."));
+        }
         try {
             Criteria c = criteriaService.add(payload);
             return new ResponseEntity<>(c, HttpStatus.CREATED);
@@ -54,8 +61,13 @@ public class ApiCriteriaController {
     }
 
     // PUT /api/criteria/:id
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateCriteria(@PathVariable("id") int id, @RequestBody Map<String, String> payload) {
+    @PutMapping("/secure/criteria/{id}")
+    public ResponseEntity<?> updateCriteria(@PathVariable("id") int id, @RequestBody Map<String, String> payload, HttpServletRequest request) {
+        String role = (String) request.getAttribute("role");
+        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền."));
+        }
         try {
             Criteria updated = criteriaService.update(id, payload);
             return ResponseEntity.ok(updated);
@@ -69,8 +81,13 @@ public class ApiCriteriaController {
     }
 
     // DELETE /api/criteria/:id
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCriteria(@PathVariable("id") int id) {
+    @DeleteMapping("/secure/criteria/{id}")
+    public ResponseEntity<?> deleteCriteria(@PathVariable("id") int id, HttpServletRequest request) {
+        String role = (String) request.getAttribute("role");
+        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền."));
+        }
         try {
             criteriaService.delete(id);
             return ResponseEntity.noContent().build();

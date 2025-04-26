@@ -45,7 +45,7 @@ public class ThesisGradeServiceImpl implements ThesisGradeService {
         int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
         int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
         int criteriaId = Integer.parseInt(payload.get("criteria_id").trim());
-        double score = Double.parseDouble(payload.get("score").trim());
+        double score = Double.parseDouble(payload.get("score"));
         Board board = boardRepo.getBoardById(boardId);
 
         checkIfBoardLocked(board);

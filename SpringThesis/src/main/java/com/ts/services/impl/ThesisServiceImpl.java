@@ -53,22 +53,36 @@ public class ThesisServiceImpl implements ThesisService {
     public Thesis addThesis(Map<String, String> payload) {
         Thesis t = new Thesis();
 
-        String title = payload.get("title").trim();
-        String description = payload.get("description").trim();
-        String yearStr = payload.get("year").trim();
-        int year = Integer.parseInt(yearStr);
-        String board_id = payload.get("boardId").trim();
+        String title = payload.get("title");
+        String description = payload.get("description");
+        String semester = payload.get("semester");
+        String yearStr = payload.get("year");
+
+        String board_id = payload.get("boardId");
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title không được để trống");
         }
-        if (year <= 0) {
-            throw new IllegalArgumentException("Year không được âm");
+        if (yearStr == null || yearStr.trim().isEmpty()) {
+            throw new IllegalArgumentException("Year không được để trống");
+        }
+
+        int year = Integer.parseInt(yearStr.trim());
+        if (year < 1 || year >3) {
+            throw new IllegalArgumentException("Year không hợp lệ");
         }
         if (description != null) {
             t.setDescription(description);
         }
+        if (semester == null || semester.trim().isEmpty()) {
+            throw new IllegalArgumentException("Semester không được để trống");
+        }
+
+        if (board_id == null || board_id.trim().isEmpty()) {
+            throw new IllegalArgumentException("BoardId không được để trống");
+        }
+
         if (board_id != null) {
-            int id = Integer.parseInt(board_id);
+            int id = Integer.parseInt(board_id.trim());
             Board b = boardRepo.getBoardById(id);
             if (b == null) {
                 throw new IllegalArgumentException("Board không tồn tại");
@@ -81,7 +95,7 @@ public class ThesisServiceImpl implements ThesisService {
             }
             t.setBoardId(b);
         }
-        t.setTitle(title);
+        t.setTitle(title.trim());
         t.setYear(year);
         Thesis savedThesis = this.thesisRepo.addOrUpdate(t);
 // 🔹 Gắn sinh viên nếu có
@@ -107,30 +121,36 @@ public class ThesisServiceImpl implements ThesisService {
         if (t == null) {
             throw new IllegalArgumentException("Không tìm thấy đề tài.");
         }
-        String title = payload.get("title").trim();
-        String description = payload.get("description").trim();
-        String yearStr = payload.get("year").trim();
-        String board_id = payload.get("board_id").trim();
+        String title = payload.get("title");
+        String description = payload.get("description");
+        String yearStr = payload.get("year");
+        String board_id = payload.get("board_id");
 
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title không được để trống");
         }
-        int year = Integer.parseInt(yearStr);
+        if (yearStr == null || yearStr.trim().isEmpty()) {
+            throw new IllegalArgumentException("Year không được để trống");
+        }
+        int year = Integer.parseInt(yearStr.trim());
         if (year <= 0) {
             throw new IllegalArgumentException("Year không được âm");
         }
         if (description != null) {
             t.setDescription(description);
         }
+        if (board_id == null || board_id.trim().isEmpty()) {
+            throw new IllegalArgumentException("BoardId không được để trống");
+        }
         if (board_id != null) {
-            int boardId = Integer.parseInt(board_id);
+            int boardId = Integer.parseInt(board_id.trim());
             Board b = boardRepo.getBoardById(boardId);
             if (b == null) {
                 throw new IllegalArgumentException("Board không tồn tại");
             }
             t.setBoardId(b);
         }
-        t.setTitle(title);
+        t.setTitle(title.trim());
         t.setYear(year);
         return this.thesisRepo.addOrUpdate(t);
     }

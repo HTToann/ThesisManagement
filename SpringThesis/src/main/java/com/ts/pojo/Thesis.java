@@ -44,12 +44,6 @@ import java.util.Set;
     @NamedQuery(name = "Thesis.findByIsLocked", query = "SELECT t FROM Thesis t WHERE t.isLocked = :isLocked")})
 public class Thesis implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "thesis_id")
-    private Integer thesisId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -62,6 +56,16 @@ public class Thesis implements Serializable {
     @NotNull
     @Column(name = "year")
     private int year;
+    @Size(max = 50)
+    @Column(name = "semester")
+    private String semester;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "thesis_id")
+    private Integer thesisId;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -110,29 +114,6 @@ public class Thesis implements Serializable {
         this.thesisId = thesisId;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -205,6 +186,44 @@ public class Thesis implements Serializable {
     @Override
     public String toString() {
         return "com.ts.pojo.Thesis[ thesisId=" + thesisId + " ]";
+    }
+
+    /**
+     * @return the semester
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param semester the semester to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
     }
     
 }

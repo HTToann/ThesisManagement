@@ -39,8 +39,11 @@ public class JwtFilter implements Filter {
                 String token = header.substring(7);
                 try {
                     String username = JwtUtils.validateTokenAndGetUsername(token);
+                    String role = JwtUtils.getRoleFromToken(token);  // ➡️ Bạn cần viết thêm hàm lấy role
+                    
                     if (username != null) {
                         httpRequest.setAttribute("username", username);
+                        httpRequest.setAttribute("role", role);         // ✅ thêm dòng này
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, null);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         chain.doFilter(request, response);
