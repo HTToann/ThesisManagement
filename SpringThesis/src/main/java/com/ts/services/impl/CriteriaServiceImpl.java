@@ -36,13 +36,14 @@ public class CriteriaServiceImpl implements CriteriaService {
     public Criteria add(Map<String, String> payload) {
         String nameStr = payload.get("name");
         String maxScoreStr = payload.get("max_score");
-        String name=nameStr.trim();
-        if (name == null || name.trim().isEmpty()) {
+
+        if (nameStr == null || nameStr.trim().isEmpty()) {
             throw new IllegalArgumentException("Tên tiêu chí không được để trống.");
         }
 
         // Kiểm tra tiêu chí trùng tên
-        Criteria existing = repo.getByName(name.trim());
+        String name = nameStr.trim();
+        Criteria existing = repo.getByName(name);
         if (existing != null) {
             throw new IllegalArgumentException("Tiêu chí với tên '" + name + "' đã tồn tại.");
         }
@@ -61,7 +62,7 @@ public class CriteriaServiceImpl implements CriteriaService {
         }
 
         Criteria c = new Criteria();
-        c.setName(name.trim());
+        c.setName(name);
         c.setMaxScore(maxScore);
 
         return repo.add(c);

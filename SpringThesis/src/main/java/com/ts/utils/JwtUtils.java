@@ -23,11 +23,12 @@ public class JwtUtils {
     //private static final String SECRET = System.getenv("JWT_SECRET");
     private static final long EXPIRATION_MS = 86400000; // 1 ngày
 
-    public static String generateToken(String username) throws Exception {
+    public static String generateToken(String username, String role) throws Exception {
         JWSSigner signer = new MACSigner(SECRET);
 
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(username)
+                .claim("role", role)  // ✅ Thêm role ở đây
                 .expirationTime(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .issueTime(new Date())
                 .build();
@@ -54,4 +55,10 @@ public class JwtUtils {
         }
         return null;
     }
+    public static String getRoleFromToken(String token) throws Exception {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
+
+            return claims.getStringClaim("role");
+}
 }

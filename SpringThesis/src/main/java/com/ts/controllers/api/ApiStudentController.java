@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.ts.controllers;
+package com.ts.controllers.api;
 
+//import com.ts.controllers.*;
 import com.ts.pojo.Student;
 import com.ts.pojo.Users;
 import com.ts.services.StudentService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Lenovo
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/secure")
 @CrossOrigin
 public class ApiStudentController {
 
@@ -34,20 +36,31 @@ public class ApiStudentController {
 
     @GetMapping("/student/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") int id) {
-        Student s = service.getStudentByUserId(id);
-        if (s == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "User không tồn tại!"));
-        }
+        try {
+            Student s = service.getStudentByUserId(id);
+            if (s == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "User không tồn tại!"));
+            }
 
-        return ResponseEntity.ok(s);
+            return ResponseEntity.ok(s);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi."));
+        }
     }
 
-    @PatchMapping("/student/{userId}/thesis")
-    public ResponseEntity<?> updateThesis(@PathVariable("userId") int userId, @RequestBody Map<String, String> payload) {
+    @PatchMapping("/student/{id}/thesis")
+    public ResponseEntity<?> updateThesis(@PathVariable("id") int id, @RequestBody Map<String, String> payload, HttpServletRequest request) {
+        String role = (String) request.getAttribute("role");
+
+        if (!"ROLE_MINISTRY".equals(role) && !"ROLE_ADMIN".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền"));
+        }
         try {
             //payload phải chứa 1 là major 2 là thesisId
-            Student s = service.updateStudent(userId, payload);
+            Student s = service.updateStudent(id, payload);
             return new ResponseEntity<>(s, HttpStatus.CREATED);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
@@ -59,7 +72,13 @@ public class ApiStudentController {
     }
 
     @DeleteMapping("/student/{id}")
-    public ResponseEntity<?> deleteStudentByUserId(@PathVariable("id") int id) {
+    public ResponseEntity<?> deleteStudentByUserId(@PathVariable("id") int id, HttpServletRequest request) {
+        String role = (String) request.getAttribute("role");
+
+        if (!"ROLE_MINISTRY".equals(role) && !"ROLE_ADMIN".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền"));
+        }
         try {
             this.service.deleteStudent(id);
             return ResponseEntity.noContent().build();

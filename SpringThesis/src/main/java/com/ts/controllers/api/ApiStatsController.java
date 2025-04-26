@@ -2,10 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.ts.controllers;
+package com.ts.controllers.api;
 
+//import com.ts.controllers.*;
 import com.ts.services.PdfExportService;
 import com.ts.services.StatsService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Lenovo
  */
 @RestController
-@RequestMapping("/api/stats")
+@RequestMapping("/api/secure/stats")
 public class ApiStatsController {
 
     @Autowired
@@ -35,7 +37,15 @@ public class ApiStatsController {
     private PdfExportService pdfService;
 
     @GetMapping("/thesis")
-    public ResponseEntity<byte[]> exportStatsPdf() {
+    public ResponseEntity<?> exportStatsPdf(HttpServletRequest request) {
+        String role = (String) request.getAttribute("role");
+
+        if (!"ROLE_MINISTRY".equals(role) && !"ROLE_ADMIN".equals(role)) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền"));
+        }
+
         try { // 🔹 Dữ liệu mock
             List<Map<String, Object>> mockStats = new ArrayList<>();
 
@@ -77,9 +87,18 @@ public class ApiStatsController {
 //statsService.getGradesSummaryByBoardAndThesis(boardId, thesisId);
 
     @GetMapping("/pdf/board-summary")
-    public ResponseEntity<byte[]> exportBoardSummary(
+    public ResponseEntity<?> exportBoardSummary(
             @RequestParam("board_id") int boardId,
-            @RequestParam("thesis_id") int thesisId) {
+            @RequestParam("thesis_id") int thesisId,
+            HttpServletRequest request) {
+        String role = (String) request.getAttribute("role");
+
+        if (!"ROLE_MINISTRY".equals(role) && !"ROLE_ADMIN".equals(role)) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền"));
+        }
+
         try {
             List<Map<String, Object>> summaries = new ArrayList<>();
             Map<String, Object> row1 = new HashMap<>();
@@ -104,7 +123,7 @@ public class ApiStatsController {
             String currentDate = java.time.LocalDate.now()
                     .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-            byte[] pdfBytes = pdfService.exportBoardSummaryToPdf(summaries,year,currentDate,boardId);
+            byte[] pdfBytes = pdfService.exportBoardSummaryToPdf(summaries, year, currentDate, boardId);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);

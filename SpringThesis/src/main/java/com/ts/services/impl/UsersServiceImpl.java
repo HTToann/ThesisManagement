@@ -6,8 +6,12 @@ package com.ts.services.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.ts.pojo.Faculty;
+import com.ts.pojo.Major;
 import com.ts.pojo.Student;
 import com.ts.pojo.Users;
+import com.ts.repositories.FacultyRepository;
+import com.ts.repositories.MajorRepository;
 import com.ts.repositories.StudentRepository;
 import com.ts.repositories.UsersRepository;
 import com.ts.services.UsersService;
@@ -39,6 +43,10 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private StudentRepository studentRepo;
     @Autowired
+    private MajorRepository majorRepo;
+    @Autowired
+    private FacultyRepository falRepo;
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private Cloudinary cloudinary;
@@ -64,14 +72,15 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users insertUser(Map<String, String> params, MultipartFile avatar) {
         Users u = new Users();
-        String firstName = params.get("firstName").trim();
-        String lastName = params.get("lastName").trim();
-        String username = params.get("username").trim();
-        String password = params.get("password").trim();
-        String phone = params.get("phone").trim();
-        String email = params.get("email").trim();
-        String role = params.get("role").trim();
-        String major = "";
+        String firstName = params.get("firstName");
+        String lastName = params.get("lastName");
+        String username = params.get("username");
+        String password = params.get("password");
+        String phone = params.get("phone");
+        String email = params.get("email");
+        String role = params.get("role");
+        String facultyIdStr = params.get("facultyId");
+        String majorIdStr = params.get("majorId");
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username không được để trống");
         }
@@ -101,24 +110,18 @@ public class UsersServiceImpl implements UsersService {
         if (this.repo.getUserByUsername(username) != null) {
             throw new IllegalArgumentException("Username đã tồn tại");
         }
-        List<String> validRoles = List.of("ROLE_ADMIN","ROLE_MINISTRY", "ROLE_LECTURER", "ROLE_STUDENT");
+        List<String> validRoles = List.of("ROLE_ADMIN", "ROLE_MINISTRY", "ROLE_LECTURER", "ROLE_STUDENT");
         if (!validRoles.contains(role.toUpperCase())) {
             throw new IllegalArgumentException("Role phải là ROLE_MINISTRY, ROLE_LECTURER, hoặc ROLE_STUDENT.");
         }
+        if (facultyIdStr == null || facultyIdStr.trim().isEmpty()) {
+            throw new IllegalArgumentException("FacultyId không được trống");
+        }
 
-        u.setFirstName(firstName);
-        u.setLastName(lastName);
-        u.setUsername(username);
-        u.setPassword(this.passwordEncoder.encode(password));
-        u.setPhone(phone);
-        u.setEmail(email);
-        u.setRole(role);
-        if (role.equals("ROLE_STUDENT")) {
-            major = params.get("major");
-            if (major == null || major.trim().isEmpty()) {
-                throw new IllegalArgumentException("Major không được để trống");
-            }
-
+        int facultyId = Integer.parseInt(facultyIdStr.trim());
+        Faculty f = this.falRepo.getById(facultyId);
+        if (f == null) {
+            throw new IllegalArgumentException("Faculty không tồn tại");
         }
         if (!avatar.isEmpty()) {
             try {
@@ -128,13 +131,34 @@ public class UsersServiceImpl implements UsersService {
                 Logger.getLogger(UsersServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        u.setFirstName(firstName.trim());
+        u.setLastName(lastName.trim());
+        u.setUsername(username.trim());
+        u.setPassword(this.passwordEncoder.encode(password));
+        u.setPhone(phone.trim());
+        u.setEmail(email.trim());
+        u.setRole(role.trim());
+        u.setFacultyId(f);
+
         Users savedUser = this.repo.addOrUpdate(u);
         if (role.equals("ROLE_STUDENT")) {
+            if (majorIdStr == null || majorIdStr.trim().isEmpty()) {
+                throw new IllegalArgumentException("MajorId không được để trống");
+            }
+            int majorId = Integer.parseInt(majorIdStr.trim());
+            Major selectedMajor = this.majorRepo.getById(majorId);
+            if (selectedMajor == null) {
+                throw new IllegalArgumentException("Major không tồn tại");
+            }
+
             Student s = new Student();
             s.setUserId(savedUser);
-            s.setMajor(major);
-            studentRepo.insertStudent(s);
+//            s.setMajor(selectedMajor.getName());  // giữ nguyên cho hiển thị
+            s.setMajorSet(Set.of(selectedMajor)); // chính là student_major
+            this.studentRepo.insertStudent(s);
+
         }
+
         return savedUser;
     }
 
@@ -155,6 +179,7 @@ public class UsersServiceImpl implements UsersService {
             MultipartFile avatar
     ) {
         Users u = this.repo.getUserById(id);
+        
         if (u == null) {
             throw new IllegalArgumentException("Không tìm thấy user có id = " + id);
         }
@@ -173,6 +198,16 @@ public class UsersServiceImpl implements UsersService {
         if (params.containsKey("email")) {
             u.setEmail(params.get("email").trim());
         }
+          String facultyIdStr = params.get("facultyId");
+        if (facultyIdStr == null || facultyIdStr.trim().isEmpty()) {
+            throw new IllegalArgumentException("FacultyId không được trống");
+        }
+        int facultyId = Integer.parseInt(facultyIdStr.trim());
+        Faculty f = this.falRepo.getById(facultyId);
+        if (f == null) {
+            throw new IllegalArgumentException("Faculty không tồn tại");
+        }
+        u.setFacultyId(f);
         if (avatar != null && !avatar.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
@@ -199,9 +234,13 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void deleteUsers(int id
-    ) {
+    public void deleteUsers(int id) {
         this.repo.deleteUsers(id);
+    }
+
+    @Override
+    public List<Users> getAllUsers() {
+        return this.repo.getAllUsers();
     }
 
 }

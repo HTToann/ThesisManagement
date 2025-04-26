@@ -37,6 +37,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableWebSecurity
 @ComponentScan(basePackages = {
     "com.ts.controllers",
+    "com.ts.controllers.api",
     "com.ts.repositories",
     "com.ts.services",})
 public class SpringSecurityConfigs {

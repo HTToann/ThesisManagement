@@ -89,7 +89,7 @@ public class UsersRepositoryImpl implements UsersRepository {
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<Users> query = builder.createQuery(Users.class);
         Root<Users> root = query.from(Users.class);
-        query.select(root).where(builder.equal(root.get("role"), "lecturer"));
+        query.select(root).where(builder.equal(root.get("role"), "ROLE_LECTURER"));
 
         Query<Users> q = s.createQuery(query);
         return q.getResultList();
@@ -102,7 +102,7 @@ public class UsersRepositoryImpl implements UsersRepository {
         CriteriaBuilder builder = s.getCriteriaBuilder();
         CriteriaQuery<Users> query = builder.createQuery(Users.class);
         Root<Users> root = query.from(Users.class);
-        query.select(root).where(builder.equal(root.get("role"), "student"));
+        query.select(root).where(builder.equal(root.get("role"), "ROLE_STUDENT"));
 
         Query<Users> q = s.createQuery(query);
         return q.getResultList();

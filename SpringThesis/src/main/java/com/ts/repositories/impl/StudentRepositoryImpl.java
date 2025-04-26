@@ -52,17 +52,18 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public void deleleStudent(int userId) {
+    public void deleleStudent(int id) {
+//        Session session = factory.getObject().getCurrentSession();
+//
+//        CriteriaBuilder cb = session.getCriteriaBuilder();
+//        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+//        Root<Student> root = cq.from(Student.class);
+//
+//        cq.select(root).where(cb.equal(root.get("users").get("userId"), userId));
+//
+//        Student s = session.createQuery(cq).uniqueResult();
         Session session = factory.getObject().getCurrentSession();
-
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
-        Root<Student> root = cq.from(Student.class);
-
-        cq.select(root).where(cb.equal(root.get("users").get("userId"), userId));
-
-        Student s = session.createQuery(cq).uniqueResult();
-
+        Student s = this.getById(id);
         session.remove(s);
 
     }
@@ -78,5 +79,11 @@ public class StudentRepositoryImpl implements StudentRepository {
 
         return session.createQuery(cq).uniqueResult();
 
+    }
+
+    @Override
+    public Student getById(int id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        return session.get(Student.class, id);
     }
 }

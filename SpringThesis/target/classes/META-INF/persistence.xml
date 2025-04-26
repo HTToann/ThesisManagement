@@ -10,5 +10,7 @@
     <class>com.ts.pojo.ThesisLecturer</class>
     <class>com.ts.pojo.Student</class>
     <class>com.ts.pojo.BoardMember</class>
+    <class>com.ts.pojo.Faculty</class>
+    <class>com.ts.pojo.Major</class>
   </persistence-unit>
 </persistence>

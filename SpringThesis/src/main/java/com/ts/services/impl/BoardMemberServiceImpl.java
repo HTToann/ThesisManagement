@@ -135,7 +135,7 @@ public class BoardMemberServiceImpl implements BoardMemberService {
     @Override
     public void removeBoardMember(int boardId, int lecturerId) {
         BoardMemberPK pk = new BoardMemberPK(boardId, lecturerId);
-        BoardMember member = repo.getById(pk); // bạn có thể viết hàm getById ở repo
+        BoardMember member = repo.getById(pk); 
         if (member == null) {
             throw new IllegalArgumentException("Không tìm thấy giảng viên này trong hội đồng.");
         }
@@ -144,12 +144,12 @@ public class BoardMemberServiceImpl implements BoardMemberService {
 
     @Override
     public BoardMember add(Map<String, String> payload) {
-        String boardIdStr = payload.get("boardId").trim();
-        String lecturerIdStr = payload.get("lecturerId").trim();
-        String role = payload.get("roleInBoard").trim();
+        String boardIdStr = payload.get("boardId");
+        String lecturerIdStr = payload.get("lecturerId");
+        String role = payload.get("roleInBoard");
 
-        int boardId = Integer.parseInt(boardIdStr);
-        int lecturerId = Integer.parseInt(lecturerIdStr);
+        int boardId = Integer.parseInt(boardIdStr.trim());
+        int lecturerId = Integer.parseInt(lecturerIdStr.trim());
 
         // Lấy thực thể Board và Users từ ID
         Board board = boardRepo.getBoardById(boardId);
@@ -164,7 +164,7 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         BoardMember member = new BoardMember();
         member.setBoard(board);
         member.setUsers(lecturer);
-        member.setRoleInBoard(role);
+        member.setRoleInBoard(role.trim());
         member.setBoardMemberPK(new BoardMemberPK(boardId, lecturerId));
         this.addBoardMember(member);
         return member;
