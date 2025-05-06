@@ -16,8 +16,17 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\a
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\api\ApiThesisGradeController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\api\ApiThesisLecturerController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\api\ApiUserController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\BoardController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\BoardMemberController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\CriteriaController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\FacultyController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\IndexController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\LoginController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\MajorController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\StudentController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ThesisController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ThesisGradeController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ThesisLecturerController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\UsersController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\filters\JwtFilter.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\Board.java
@@ -82,4 +91,5 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\Thes
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\ThesisService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\UsersService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\springthesis\JakartaRestConfiguration.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\utils\AuthUtils.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\utils\JwtUtils.java

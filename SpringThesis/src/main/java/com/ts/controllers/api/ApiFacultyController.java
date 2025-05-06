@@ -1,31 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ts.controllers.api;
 
-//import com.ts.controllers.*;
 import com.ts.pojo.Faculty;
 import com.ts.services.FacultyService;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Map;
+import com.ts.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author Lenovo
- */
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
@@ -63,9 +47,8 @@ public class ApiFacultyController {
     }
 
     @PostMapping("/secure/faculty/create")
-    public ResponseEntity<?> create(@RequestBody Map<String, String> faculty, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role)) {
+    public ResponseEntity<?> create(@RequestBody Map<String, String> faculty) {
+        if (!AuthUtils.hasRole("ROLE_ADMIN")) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Bạn không có quyền"));
@@ -83,13 +66,13 @@ public class ApiFacultyController {
     }
 
     @PutMapping("/secure/faculty/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody Map<String, String> faculty, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role)) {
+    public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody Map<String, String> faculty) {
+        if (!AuthUtils.hasRole("ROLE_ADMIN")) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Bạn không có quyền"));
         }
+
         try {
             return ResponseEntity.ok(facultyService.update(id, faculty));
         } catch (IllegalArgumentException e) {
@@ -102,13 +85,13 @@ public class ApiFacultyController {
     }
 
     @DeleteMapping("/secure/faculty/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") int id, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role)) {
+    public ResponseEntity<?> delete(@PathVariable("id") int id) {
+        if (!AuthUtils.hasRole("ROLE_ADMIN")) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Bạn không có quyền"));
         }
+
         try {
             facultyService.delete(id);
             return ResponseEntity.noContent().build();

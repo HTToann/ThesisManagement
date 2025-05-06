@@ -6,6 +6,7 @@ package com.ts.repositories.impl;
 
 import com.ts.pojo.ThesisGrade;
 import com.ts.pojo.ThesisGradePK;
+import com.ts.pojo.Users;
 import com.ts.repositories.ThesisGradeRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -68,11 +69,31 @@ public class ThesisGradeRepositoryImpl implements ThesisGradeRepository {
         Session session = factory.getObject().getCurrentSession();
         return session.get(ThesisGrade.class, new ThesisGradePK(boardId, thesisId, lecturerId, criteriaId));
     }
+
     @Override
     public void delete(int boardId, int thesisId, int lecturerId, int criteriaId) {
         Session session = factory.getObject().getCurrentSession();
         ThesisGradePK pk = new ThesisGradePK(boardId, thesisId, lecturerId, criteriaId);
         ThesisGrade tg = session.get(ThesisGrade.class, pk);
         session.remove(tg);
+    }
+
+    @Override
+    public List<ThesisGrade> getAll() {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.createNamedQuery("ThesisGrade.findAll", ThesisGrade.class)
+                .getResultList();
+    }
+
+    @Override
+    public List<ThesisGrade> getByBoardId(int boardId) {
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<ThesisGrade> cq = cb.createQuery(ThesisGrade.class);
+        Root<ThesisGrade> root = cq.from(ThesisGrade.class);
+        cq.select(root).where(cb.equal(
+                root.get("thesis").get("boardId").get("boardId"), boardId
+        ));
+        return session.createQuery(cq).getResultList();
     }
 }

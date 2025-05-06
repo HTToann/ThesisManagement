@@ -1,1 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý điểm khóa luận</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
 
+    <main class="container mt-4">
+        <h2 class="text-center text-primary">Danh sách điểm khóa luận</h2>
+        <form class="mb-3" th:action="@{/admin/thesis-grade}" method="get">
+            <input type="text" class="form-control" name="kw" placeholder="Tìm theo ID hội đồng" />
+        </form>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Hội đồng</th>
+                    <th>Khóa luận</th>
+                    <th>Giảng viên</th>
+                    <th>Tiêu chí</th>
+                    <th>Điểm</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="g : ${grades}">
+                    <td th:text="${g.board.boardId}">Hội đồng</td>
+                    <td th:text="${g.thesis.title}">Tiêu đề</td>
+                    <td th:text="${g.users.lastName + ' ' + g.users.firstName}">GV</td>
+                    <td th:text="${g.criteria.name}">Tiêu chí</td>
+                    <td th:text="${g.score}">0.0</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:attr="onclick=|editGrade(${g.thesisGradePK.boardId}, ${g.thesisGradePK.thesisId}, ${g.thesisGradePK.lecturerId}, ${g.thesisGradePK.criteriaId}, ${g.score})|">
+                            Sửa
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                                th:attr="onclick=|deleteGrade(${g.thesisGradePK.boardId}, ${g.thesisGradePK.thesisId}, ${g.thesisGradePK.lecturerId}, ${g.thesisGradePK.criteriaId})|">
+                            Xoá
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success" onclick="openAddGradeModal()">➕ Thêm điểm</button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="GradeModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="GradeForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thông tin điểm khóa luận</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="mode" />
+                            <select name="boardId" class="form-select mb-2" required>
+                                <option value="">-- Chọn Hội đồng --</option>
+                                <option th:each="b : ${boards}" th:value="${b.boardId}" th:text="${b.boardId}"></option>
+                            </select>
+
+                            <!-- Chọn Khóa luận -->
+                            <select name="thesisId" class="form-select mb-2" required>
+                                <option value="">-- Chọn Khóa luận --</option>
+                                <option th:each="t : ${theses}" th:value="${t.thesisId}" th:text="${t.title}"></option>
+                            </select>
+
+                            <!-- Chọn Giảng viên -->
+                            <select name="lecturerId" class="form-select mb-2" required>
+                                <option value="">-- Chọn Giảng viên --</option>
+                                <option th:each="u : ${lecturers}" th:value="${u.userId}" th:text="${u.lastName + ' ' + u.firstName}"></option>
+                            </select>
+
+                            <!-- Chọn Tiêu chí -->
+                            <select name="criteriaId" class="form-select mb-2" required>
+                                <option value="">-- Chọn Tiêu chí --</option>
+                                <option th:each="c : ${criteriaList}" 
+                                        th:value="${c.criteriaId}" 
+                                        th:text="|${c.name} (Tối đa: ${c.maxScore})|">
+                                </option>
+                            </select>
+                            <input type="number" step="0.1" class="form-control mb-2" name="score" placeholder="Điểm" required />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/thesisGrade.js}"></script>
+</body>
+</html>

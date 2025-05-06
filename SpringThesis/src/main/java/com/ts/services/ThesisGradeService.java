@@ -16,6 +16,8 @@ public interface ThesisGradeService {
     void add(Map<String, String> payload);
     void update(Map<String, String> payload);
     void delete(Map<String, String> payload);
+    List<ThesisGrade> getAll();
     List<ThesisGrade> getByThesisId(int thesisId);
+    List<ThesisGrade> getByBoardId(int boardId);
     List<ThesisGrade> getByLecturerAndBoard(int lecturerId, int boardId);
 }

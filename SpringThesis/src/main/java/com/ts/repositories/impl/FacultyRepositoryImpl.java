@@ -73,4 +73,15 @@ public class FacultyRepositoryImpl implements FacultyRepository {
         return result.isEmpty() ? null : result.get(0);
     }
 
+    @Override
+    public List<Faculty> searchByName(String keyword) {
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Faculty> cq = cb.createQuery(Faculty.class);
+        Root<Faculty> root = cq.from(Faculty.class);
+        cq.select(root).where(cb.like(root.get("name"), "%" + keyword + "%"));
+
+        return session.createQuery(cq).getResultList();
+    }
+
 }

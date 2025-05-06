@@ -89,6 +89,9 @@ public class CriteriaServiceImpl implements CriteriaService {
                 if (maxScore <= 0) {
                     throw new IllegalArgumentException("Điểm tối đa phải lớn hơn 0.");
                 }
+                if (maxScore > 10) {
+                    throw new IllegalArgumentException("Điểm tối đa không được lớn hơn 10.");
+                }
                 c.setMaxScore(maxScore);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Điểm tối đa không hợp lệ.");
@@ -105,5 +108,15 @@ public class CriteriaServiceImpl implements CriteriaService {
             throw new IllegalArgumentException("Không tìm thấy tiêu chí.");
         }
         repo.delete(id);
+    }
+
+    @Override
+    public Criteria getByName(String name) {
+        return this.repo.getByName(name);
+    }
+
+    @Override
+    public List<Criteria> searchByName(String keyword) {
+        return this.repo.searchByName(keyword);
     }
 }

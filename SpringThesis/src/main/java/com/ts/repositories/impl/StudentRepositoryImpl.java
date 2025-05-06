@@ -5,12 +5,15 @@
 package com.ts.repositories.impl;
 
 import com.ts.pojo.Student;
+import com.ts.pojo.Users;
 import com.ts.repositories.StudentRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -31,7 +34,6 @@ public class StudentRepositoryImpl implements StudentRepository {
     public void insertStudent(Student student) {
         Session s = this.factory.getObject().getCurrentSession();
         s.persist(student);
-        s.refresh(student);
     }
 
     @Override
@@ -85,5 +87,22 @@ public class StudentRepositoryImpl implements StudentRepository {
     public Student getById(int id) {
         Session session = this.factory.getObject().getCurrentSession();
         return session.get(Student.class, id);
+    }
+
+    @Override
+    public List<Student> getAll() {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM Student", Student.class);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Student> getStudentByUsername(String kw) {
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+        Root<Student> root = cq.from(Student.class);
+        cq.select(root).where(cb.like(cb.lower(root.get("userId").get("username")), "%" + kw.toLowerCase() + "%"));
+        return session.createQuery(cq).getResultList();
     }
 }

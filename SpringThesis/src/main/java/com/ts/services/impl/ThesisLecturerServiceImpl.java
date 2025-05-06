@@ -35,9 +35,9 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
     @Override
     public void add(Map<String, String> payload) {
         try {
-            int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
-            int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
-            String role = payload.get("role");
+            int thesisId = Integer.parseInt(payload.get("thesisId").trim());
+            int lecturerId = Integer.parseInt(payload.get("lecturerId").trim());
+            String role = payload.get("lectureRole");
 
             if (role == null || (!role.equals("ROLE_MAIN_ADVISOR") && !role.equals("ROLE_CO_ADVISOR"))) {
                 throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'ROLE_MAIN_ADVISOR' hoặc 'ROLE_CO_ADVISOR'.");
@@ -88,8 +88,8 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
     @Override
     public void delete(Map<String, String> payload) {
         try {
-            int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
-            int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
+            int thesisId = Integer.parseInt(payload.get("thesisId").trim());
+            int lecturerId = Integer.parseInt(payload.get("lecturerId").trim());
 
             ThesisLecturer tl = repo.getByCompositeKey(thesisId, lecturerId);
             if (tl == null) {
@@ -105,47 +105,65 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
     @Override
     public void updateLecturer(Map<String, String> payload) {
         try {
-            int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
-            int oldLecturerId = Integer.parseInt(payload.get("old_lecturer_id").trim());
-            int newLecturerId = Integer.parseInt(payload.get("new_lecturer_id").trim());
+            int thesisId = Integer.parseInt(payload.get("thesisId").trim());
+            int oldLecturerId = Integer.parseInt(payload.get("oldLecturerId").trim());
+            int newLecturerId = Integer.parseInt(payload.get("newLecturerId").trim());
+            String newRole = payload.get("lectureRole");
 
-            // Ràng buộc
+            if (newRole == null || newRole.trim().isEmpty()) {
+                throw new IllegalArgumentException("Vai trò không được để trống.");
+            }
+
+            // Tìm bản ghi hiện tại
+            ThesisLecturer current = repo.getByCompositeKey(thesisId, oldLecturerId);
+            if (current == null) {
+                throw new IllegalArgumentException("Không tìm thấy bản ghi để cập nhật.");
+            }
+
+            // Nếu chỉ đổi vai trò (giữ nguyên lecturer)
             if (oldLecturerId == newLecturerId) {
-                throw new IllegalArgumentException("Lecturer cũ và mới không được trùng nhau.");
+                current.setLectureRole(newRole.trim());
+                repo.updateRole(current);
+                return;
             }
 
-            ThesisLecturer existing = repo.getByCompositeKey(thesisId, oldLecturerId);
-            if (existing == null) {
-                throw new IllegalArgumentException("Không tồn tại phân công giảng viên cần thay thế.");
-            }
-
+            // Nếu đổi lecturer → kiểm tra giảng viên mới
             Users newLecturer = userRepo.getUserById(newLecturerId);
             if (newLecturer == null) {
                 throw new IllegalArgumentException("Giảng viên mới không tồn tại.");
             }
 
-            List<ThesisLecturer> currentLecturers = repo.getByThesisId(thesisId);
-            for (ThesisLecturer l : currentLecturers) {
-                if (l.getUsers().getUserId().equals(newLecturerId)) {
+            List<ThesisLecturer> existingLecturers = repo.getByThesisId(thesisId);
+            for (ThesisLecturer tl : existingLecturers) {
+                if (tl.getUsers().getUserId().equals(newLecturerId)) {
                     throw new IllegalArgumentException("Giảng viên mới đã được phân công.");
                 }
             }
 
-            // Xoá giảng viên cũ
+            // Xoá cũ → thêm mới
             repo.delete(thesisId, oldLecturerId);
 
-            // Tạo mới với giảng viên mới và role cũ
-            ThesisLecturer newTL = new ThesisLecturer();
-            newTL.setThesis(existing.getThesis());
-            newTL.setUsers(newLecturer);
-            newTL.setLectureRole(existing.getLectureRole());
-            newTL.setThesisLecturerPK(new ThesisLecturerPK(thesisId, newLecturerId));
+            ThesisLecturer updated = new ThesisLecturer();
+            updated.setThesis(current.getThesis());
+            updated.setUsers(newLecturer);
+            updated.setLectureRole(newRole.trim());
+            updated.setThesisLecturerPK(new ThesisLecturerPK(thesisId, newLecturerId));
 
-            repo.add(newTL);
+            repo.add(updated);
 
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ex) {
             throw new IllegalArgumentException("ID không hợp lệ.");
         }
+    }
+
+    @Override
+    public List<ThesisLecturer> getAll() {
+        return this.repo.getAll();
+    }
+
+    @Override
+    public List<ThesisLecturer> getByThesisName(String kw) {
+        return repo.getByThesisName(kw);
     }
 
 }

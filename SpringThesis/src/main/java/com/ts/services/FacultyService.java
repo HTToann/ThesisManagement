@@ -17,6 +17,7 @@ public interface FacultyService {
     List<Faculty> getAll();
     Faculty create(Map<String, String> payload);
     Faculty update(int id,Map<String, String> payload);
-
+    Faculty getByName(String name);
+    List<Faculty> searchByName(String keyword);
     void delete(int id);
 }

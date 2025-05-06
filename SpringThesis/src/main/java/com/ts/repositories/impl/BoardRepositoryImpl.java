@@ -43,7 +43,6 @@ public class BoardRepositoryImpl implements BoardRepository{
          Session s = this.factory.getObject().getCurrentSession();
          if (board.getBoardId()!= null)
              s.merge(board);
-         s.refresh(board);
          return board;
     }
 

@@ -15,6 +15,8 @@ import java.util.Map;
 public interface ThesisLecturerService {
     void add(Map<String,String> payload);
     List<ThesisLecturer> getByThesisId(int thesisId);
+    List<ThesisLecturer> getByThesisName(String kw);
+    List<ThesisLecturer> getAll();
     void delete(Map<String, String> payload) ;
     void updateLecturer(Map<String, String> payload);
 }

@@ -41,10 +41,10 @@ public class ThesisGradeServiceImpl implements ThesisGradeService {
 
     @Override
     public void add(Map<String, String> payload) {
-        int boardId = Integer.parseInt(payload.get("board_id").trim());
-        int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
-        int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
-        int criteriaId = Integer.parseInt(payload.get("criteria_id").trim());
+        int boardId = Integer.parseInt(payload.get("boardId").trim());
+        int thesisId = Integer.parseInt(payload.get("thesisId").trim());
+        int lecturerId = Integer.parseInt(payload.get("lecturerId").trim());
+        int criteriaId = Integer.parseInt(payload.get("criteriaId").trim());
         double score = Double.parseDouble(payload.get("score"));
         Board board = boardRepo.getBoardById(boardId);
 
@@ -88,10 +88,10 @@ public class ThesisGradeServiceImpl implements ThesisGradeService {
 
     @Override
     public void update(Map<String, String> payload) {
-        int boardId = Integer.parseInt(payload.get("board_id").trim());
-        int thesisId = Integer.parseInt(payload.get("thesis_id").trim());
-        int lecturerId = Integer.parseInt(payload.get("lecturer_id").trim());
-        int criteriaId = Integer.parseInt(payload.get("criteria_id").trim());
+        int boardId = Integer.parseInt(payload.get("boardId").trim());
+        int thesisId = Integer.parseInt(payload.get("thesisId").trim());
+        int lecturerId = Integer.parseInt(payload.get("lecturerId").trim());
+        int criteriaId = Integer.parseInt(payload.get("criteriaId").trim());
         double score = Double.parseDouble(payload.get("score").trim());
 
         Board board = boardRepo.getBoardById(boardId);
@@ -163,5 +163,15 @@ public class ThesisGradeServiceImpl implements ThesisGradeService {
         if (Boolean.TRUE.equals(board.getIsLocked())) {
             throw new IllegalStateException("Hội đồng đã bị khóa, không thể thao tác.");
         }
+    }
+
+    @Override
+    public List<ThesisGrade> getAll() {
+        return this.repo.getAll();
+    }
+
+    @Override
+    public List<ThesisGrade> getByBoardId(int boardId) {
+        return repo.getByBoardId(boardId);
     }
 }

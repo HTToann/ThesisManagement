@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public interface ThesisService {
     Thesis getThesisById(int thesisId);
+    List<Thesis> getThesisByName(String kw);
     void deleteThesisById(int thesisId);
     List<Thesis> getAllThesis();
     Thesis addThesis(Map<String,String> params);

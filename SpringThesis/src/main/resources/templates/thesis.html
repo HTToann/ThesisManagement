@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý Khóa luận</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
 
+    <main class="container mt-4">
+        <h2 class="text-center text-primary">Danh sách Khóa luận</h2>
+        <form class="mb-3" th:action="@{/admin/thesis}" method="get">
+            <input type="text" class="form-control" name="kw" placeholder="Tìm theo title khóa luận" />
+        </form>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tiêu đề</th>
+                    <th>Mô tả</th>
+                    <th>Năm</th>
+                    <th>Học kỳ</th>
+                    <th>Hội đồng</th>
+                    <th>Khóa</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="t : ${theses}">
+                    <td th:text="${t.title}"></td>
+                    <td th:text="${t.description}"></td>
+                    <td th:text="${t.year}"></td>
+                    <td th:text="${t.semester}"></td>
+                    <td th:text="${t.boardId}">-</td>
+                    <td th:text="${t.isLocked ? '✅' : '❌'}"></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:attr="onclick=|editThesis(${t.thesisId}, '${t.title}', '${t.description}', ${t.year}, '${t.semester}', ${t.boardId?.boardId})|">
+                            Sửa
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                                th:onclick="'deleteThesis(' + ${t.thesisId} + ')'">
+                            Xoá
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success" onclick="openAddThesisModal()">➕ Thêm khóa luận</button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="ThesisModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="ThesisForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thông tin Khóa luận</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="thesisId" />
+                            <input type="text" class="form-control mb-2" name="title" placeholder="Tiêu đề" required />
+                            <textarea class="form-control mb-2" name="description" placeholder="Mô tả"></textarea>
+                            <input type="number" class="form-control mb-2" name="year" placeholder="Năm" required />
+                            <select name="boardId" class="form-select mb-2" required>
+                                <option value="">-- Chọn hội đồng --</option>
+                                <option th:each="b : ${boards}" th:value="${b.boardId}" th:text="${b.boardId}"></option>
+                            </select>
+                            <input type="text" class="form-control mb-2" name="semester" placeholder="Học kỳ" required />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/Thesis.js}"></script>
+</body>
+</html>

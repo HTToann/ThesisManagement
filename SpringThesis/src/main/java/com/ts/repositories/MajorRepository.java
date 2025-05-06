@@ -15,6 +15,7 @@ public interface MajorRepository {
     Major getById(int id);
     Major getByName(String name);
     List<Major> getAllMajors();
+    List<Major> searchByName(String keyword);
     Major addOrUpdate(Major major);
     void delete(int id);
 }

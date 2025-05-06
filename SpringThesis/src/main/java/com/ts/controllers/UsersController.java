@@ -6,6 +6,7 @@ package com.ts.controllers;
 
 import com.ts.pojo.Users;
 import com.ts.services.FacultyService;
+import com.ts.services.MajorService;
 import com.ts.services.UsersService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class UsersController {
     private UsersService service;
     @Autowired
     private FacultyService facService;
+    @Autowired
+    private MajorService maService;
     @GetMapping("/admin/users")
     public String addView(Model model, @RequestParam(value = "kw", required = false) String keyword) {
         List<Users> users;
@@ -32,10 +35,11 @@ public class UsersController {
             users = service.getAllUsers();
         } else {
             Users u = service.getUserByUsername(keyword);
-            users = u != null ? List.of(u) : List.of(); // Java 9+ | Arrays.asList(u) nếu Java 8
+            users = u != null ? List.of(u) : List.of(); 
         }
         model.addAttribute("users", users);
         model.addAttribute("faculty",this.facService.getAll());
+//        model.addAttribute("majors",maService.getAllMajors());
         return "users";
     }
 

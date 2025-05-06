@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý Hội đồng</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
 
+    <main class="container mt-4 p-4 bg-light border rounded shadow">
+        <h2 class="mb-4 text-center text-primary">Quản lý Hội đồng</h2>
+        <form class="mb-3" th:action="@{/admin/board}" method="get">
+            <input type="text" class="form-control" name="kw" placeholder="Tìm theo ID hội đồng" />
+        </form>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái khoá</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="b : ${boards}">
+                    <td th:text="${b.boardId}"></td>
+                    <td th:text="${#dates.format(b.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <span class="badge" th:classappend="${b.isLocked} ? 'bg-danger' : 'bg-success'" th:text="${b.isLocked} ? 'Đã khoá' : 'Đang mở'"></span>
+                    </td>
+                    <!--                    <td>
+                                            <button class="btn btn-danger btn-sm" th:onclick="'deleteBoard(' + ${b.boardId} + ')'">Xoá</button>
+                                        </td>-->
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:text="${b.isLocked} ? 'Mở khoá' : 'Khoá'"
+                                th:onclick="'toggleLockBoard(' + ${b.boardId} + ', ' + ${b.isLocked} + ')'">
+                        </button>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success mb-3" onclick="createBoard()">➕ Tạo hội đồng</button>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/Board.js}"></script>
+</body>
+</html>
