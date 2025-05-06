@@ -13,6 +13,7 @@ import java.util.List;
  */
 public interface ThesisRepository {
     Thesis getThesisById(int thesisId);
+    List<Thesis> getThesisByName(String kw);
     void deleteThesisById(int thesisId);
     List<Thesis> getAllThesis();
     List<Thesis> getThesesByBoardId(int boardId);

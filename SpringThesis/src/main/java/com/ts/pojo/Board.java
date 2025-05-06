@@ -140,7 +140,7 @@ public class Board implements Serializable {
 
     @Override
     public String toString() {
-        return "com.ts.pojo.Board[ boardId=" + boardId + " ]";
+        return ""+ boardId +"";
     }
     
 }

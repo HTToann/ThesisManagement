@@ -1,30 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ts.controllers.api;
 
-//import com.ts.controllers.*;
 import com.ts.pojo.Board;
 import com.ts.services.BoardService;
+import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author Lenovo
- */
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
@@ -36,7 +22,7 @@ public class ApiBoardController {
     @GetMapping("/boards")
     public ResponseEntity<?> listBoards() {
         try {
-            return ResponseEntity.ok(this.boardService.getAllBoard());
+            return ResponseEntity.ok(boardService.getAllBoard());
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         } catch (Exception ex) {
@@ -46,16 +32,14 @@ public class ApiBoardController {
     }
 
     @PostMapping("/secure/boards")
-    public ResponseEntity<?> createBoard(HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+    public ResponseEntity<?> createBoard() {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Bạn không có quyền tạo hội đồng."));
         }
         try {
-            Board board = new Board();
-            board = this.boardService.addBoard(board);  // Thêm board vào DB
-            return new ResponseEntity<>(board, HttpStatus.CREATED); // Trả về chính đối tượng vừa tạo
+            Board board = boardService.addBoard(new Board());
+            return new ResponseEntity<>(board, HttpStatus.CREATED);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         } catch (Exception ex) {
@@ -66,15 +50,13 @@ public class ApiBoardController {
 
     @PatchMapping("/secure/boards/{id}")
     public ResponseEntity<?> updateBoard(@PathVariable("id") int id,
-            @RequestParam Map<String, String> params, HttpServletRequest request
-    ) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+                                         @RequestBody Map<String, String> payload) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Bạn không có quyền tạo hội đồng."));
+                    .body(Map.of("error", "Bạn không có quyền cập nhật hội đồng."));
         }
         try {
-            Board b = this.boardService.updateBoard(id, params);
+            Board b = boardService.updateBoard(id, payload);
             return ResponseEntity.ok(b);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
@@ -85,15 +67,13 @@ public class ApiBoardController {
     }
 
     @GetMapping("/boards/{id}")
-    public ResponseEntity<?> getBoardById(@PathVariable("id") int id
-    ) {
+    public ResponseEntity<?> getBoardById(@PathVariable("id") int id) {
         try {
-            Board b = this.boardService.getBoardById(id);
+            Board b = boardService.getBoardById(id);
             if (b == null) {
                 return ResponseEntity.notFound().build();
-            } else {
-                return new ResponseEntity<>(b, HttpStatus.OK);
             }
+            return ResponseEntity.ok(b);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Đã xảy ra lỗi."));

@@ -5,6 +5,7 @@
 package com.ts.repositories.impl;
 
 import com.ts.pojo.Thesis;
+import com.ts.pojo.ThesisLecturer;
 import com.ts.pojo.Users;
 import com.ts.repositories.ThesisRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -76,5 +77,16 @@ public class ThesisRepositoryImpl implements ThesisRepository {
 
         Query<Thesis> query = session.createQuery(cq);
         return query.getResultList();
+    }
+
+    @Override
+    public List<Thesis> getThesisByName(String kw) {
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Thesis> cq = cb.createQuery(Thesis.class);
+        Root<Thesis> root = cq.from(Thesis.class);
+        cq.select(root).where(cb.like(cb.lower(root.get("title")), "%" + kw.toLowerCase() + "%"));
+
+        return session.createQuery(cq).getResultList();
     }
 }

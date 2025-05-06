@@ -7,6 +7,7 @@ package com.ts.controllers.api;
 //import com.ts.controllers.*;
 import com.ts.services.PdfExportService;
 import com.ts.services.StatsService;
+import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,12 +38,9 @@ public class ApiStatsController {
     private PdfExportService pdfService;
 
     @GetMapping("/thesis")
-    public ResponseEntity<?> exportStatsPdf(HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-
-        if (!"ROLE_MINISTRY".equals(role) && !"ROLE_ADMIN".equals(role)) {
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
+    public ResponseEntity<?> exportStatsPdf() {
+        if (!AuthUtils.hasAnyRole("ROLE_MINISTRY", "ROLE_ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Bạn không có quyền"));
         }
 
@@ -89,13 +87,9 @@ public class ApiStatsController {
     @GetMapping("/pdf/board-summary")
     public ResponseEntity<?> exportBoardSummary(
             @RequestParam("board_id") int boardId,
-            @RequestParam("thesis_id") int thesisId,
-            HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-
-        if (!"ROLE_MINISTRY".equals(role) && !"ROLE_ADMIN".equals(role)) {
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
+            @RequestParam("thesis_id") int thesisId) {
+        if (!AuthUtils.hasAnyRole("ROLE_MINISTRY", "ROLE_ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Bạn không có quyền"));
         }
 

@@ -1,32 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ts.controllers.api;
 
-//import com.ts.controllers.*;
 import com.ts.pojo.ThesisGrade;
 import com.ts.services.ThesisGradeService;
+import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author Lenovo
- */
 @RestController
 @RequestMapping("/api/secure/thesis-grades")
 @CrossOrigin
@@ -35,11 +19,10 @@ public class ApiThesisGradeController {
     @Autowired
     private ThesisGradeService thesisGradeService;
 
-    // POST /api/thesis-grades: Ghi điểm
+    // 📌 Ghi điểm
     @PostMapping
-    public ResponseEntity<?> addGrade(@RequestBody Map<String, String> payload, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_LECTURER".equals(role)) {
+    public ResponseEntity<?> addGrade(@RequestBody Map<String, String> payload) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_LECTURER")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {
@@ -52,11 +35,10 @@ public class ApiThesisGradeController {
         }
     }
 
-    // PUT /api/thesis-grades: Cập nhật điểm
+    // 📌 Cập nhật điểm
     @PutMapping
-    public ResponseEntity<?> updateGrade(@RequestBody Map<String, String> payload, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_LECTURER".equals(role)) {
+    public ResponseEntity<?> updateGrade(@RequestBody Map<String, String> payload) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_LECTURER")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {
@@ -69,11 +51,10 @@ public class ApiThesisGradeController {
         }
     }
 
-    // GET /api/thesis-grades?thesis_id=1
+    // 📌 GET theo thesis_id
     @GetMapping(params = "thesis_id")
-    public ResponseEntity<?> getByThesisId(@RequestParam("thesis_id") int thesisId, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_LECTURER".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+    public ResponseEntity<?> getByThesisId(@RequestParam("thesis_id") int thesisId) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_LECTURER", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {
@@ -88,12 +69,11 @@ public class ApiThesisGradeController {
         }
     }
 
-    // GET /api/thesis-grades?lecturer_id=...&board_id=...
+    // 📌 GET theo lecturer_id + board_id
     @GetMapping(params = {"lecturer_id", "board_id"})
     public ResponseEntity<?> getByLecturerAndBoard(@RequestParam("lecturer_id") int lecturerId,
-            @RequestParam("board_id") int boardId, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_LECTURER".equals(role)) {
+                                                   @RequestParam("board_id") int boardId) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_LECTURER")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {
@@ -108,10 +88,10 @@ public class ApiThesisGradeController {
         }
     }
 
+    // 📌 Xoá điểm
     @DeleteMapping
-    public ResponseEntity<?> deleteGrade(@RequestBody Map<String, String> payload, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_LECTURER".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+    public ResponseEntity<?> deleteGrade(@RequestBody Map<String, String> payload) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_LECTURER", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {

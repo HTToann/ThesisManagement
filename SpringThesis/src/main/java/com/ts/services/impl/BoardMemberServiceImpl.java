@@ -44,7 +44,7 @@ public class BoardMemberServiceImpl implements BoardMemberService {
     @Autowired
     private EmailService emailService;
 
-    private void sendGmailToMember(BoardMember member,String role,int boardId) {
+    private void sendGmailToMember(BoardMember member, String role, int boardId) {
         String email = member.getUsers().getEmail();
         String subject = "Thông báo phân công vào hội đồng phản biện";
         String content = String.format("""
@@ -63,6 +63,7 @@ public class BoardMemberServiceImpl implements BoardMemberService {
 
         emailService.sendEmail(email, subject, content);
     }
+
     @Override
     public void addBoardMember(BoardMember member) {
         int boardId = member.getBoard().getBoardId();
@@ -97,7 +98,7 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         }
 
         repo.addBoardMember(member);
-        sendGmailToMember(member,role,boardId);
+        sendGmailToMember(member, role, boardId);
 //        // Kiểm tra lại tổng số thành viên sau khi thêm (đảm bảo tối thiểu 3)
 //        List<BoardMember> updatedMembers = repo.getBoardMembersByBoardId(boardId);
 //        if (updatedMembers.size() < 3) {
@@ -135,7 +136,7 @@ public class BoardMemberServiceImpl implements BoardMemberService {
     @Override
     public void removeBoardMember(int boardId, int lecturerId) {
         BoardMemberPK pk = new BoardMemberPK(boardId, lecturerId);
-        BoardMember member = repo.getById(pk); 
+        BoardMember member = repo.getById(pk);
         if (member == null) {
             throw new IllegalArgumentException("Không tìm thấy giảng viên này trong hội đồng.");
         }
@@ -168,5 +169,19 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         member.setBoardMemberPK(new BoardMemberPK(boardId, lecturerId));
         this.addBoardMember(member);
         return member;
+    }
+
+    @Override
+    public List<BoardMember> getAll() {
+        return this.repo.getAll();
+    }
+
+    @Override
+    public void updateRole(int boardId, int lecturerId, Map<String, String> payload) {
+        String newRole = payload.get("roleInBoard");
+        if (newRole == null || newRole.trim().isEmpty()) {
+            throw new IllegalArgumentException("Vai trò không được để trống.");
+        }
+        repo.updateBoardMemberRole(boardId, lecturerId, newRole);
     }
 }

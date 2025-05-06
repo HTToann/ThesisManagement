@@ -15,7 +15,11 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -29,7 +33,13 @@ public class JwtFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
-        if (uri.startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == true ) {
+        if (uri.startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == true) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+                // Đã login bằng session → không cần JWT
+                chain.doFilter(request, response);
+                return;
+            }
             String header = httpRequest.getHeader("Authorization");
 
             if (header == null || !header.startsWith("Bearer ")) {
@@ -43,8 +53,12 @@ public class JwtFilter implements Filter {
                     
                     if (username != null) {
                         httpRequest.setAttribute("username", username);
-                        httpRequest.setAttribute("role", role);         // ✅ thêm dòng này
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, null);
+                        // ⚠️ Đây là bước bạn còn thiếu: convert role -> authority
+                        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+                        System.out.println("Authorities = " + authorities);
+                        // Ví dụ: role = "ROLE_MINISTRY"
+//                        httpRequest.setAttribute("role", role); 
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         chain.doFilter(request, response);
                         return;

@@ -7,11 +7,13 @@ package com.ts.services.impl;
 import com.ts.pojo.Major;
 import com.ts.pojo.Student;
 import com.ts.pojo.Thesis;
+import com.ts.pojo.Users;
 import com.ts.repositories.MajorRepository;
 import com.ts.repositories.StudentRepository;
 import com.ts.repositories.ThesisRepository;
 import com.ts.repositories.UsersRepository;
 import com.ts.services.StudentService;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +31,45 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private MajorRepository majorRepo;
     @Autowired
+    private UsersRepository userRepo;
+    @Autowired
     private ThesisRepository thesisRepo;
 
     @Override
-    public void insertStudent(Student student) {
-        repo.insertStudent(student);
+    public void insertStudent(Map<String, String> payload) {
+//        repo.insertStudent(student);
+        String userIdStr = payload.get("userId");
+        String thesisIdStr = payload.get("thesisId");
+        String majorIdStr = payload.get("majorId");
+
+        if (userIdStr == null || majorIdStr == null) {
+            throw new IllegalArgumentException("Thiếu dữ liệu bắt buộc");
+        }
+
+        int userId = Integer.parseInt(userIdStr.trim());
+        Users user = userRepo.getUserById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User không tồn tại");
+        }
+
+        Student s = new Student();
+        s.setUserId(user);
+        if (thesisIdStr != null && !thesisIdStr.trim().isEmpty()) {
+            int thesisId = Integer.parseInt(thesisIdStr.trim());
+            Thesis thesis = thesisRepo.getThesisById(thesisId);
+            if (thesis == null) {
+                throw new IllegalArgumentException("Khóa luận không tồn tại");
+            }
+            s.setThesisId(thesis);
+        }
+
+        int majorId = Integer.parseInt(majorIdStr.trim());
+        Major major = majorRepo.getById(majorId);
+        if (major == null) {
+            throw new IllegalArgumentException("Ngành không tồn tại");
+        }
+        s.setMajorSet(Set.of(major));
+        repo.insertStudent(s);
     }
 
     @Override
@@ -83,5 +119,17 @@ public class StudentServiceImpl implements StudentService {
             throw new IllegalArgumentException("Không tồn tại id của student này");
         }
     }
+
+    @Override
+    public List<Student> getAll() {
+        return this.repo.getAll();
+    }
+
+    @Override
+    public List<Student> getStudentsByUsername(String kw) {
+        return this.repo.getStudentByUsername(kw);
+    }
+
+   
 
 }

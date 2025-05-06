@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý Sinh viên</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
 
+    <main class="container mt-4 p-4 bg-light border rounded shadow">
+        <h2 class="mb-4 text-center text-primary">Danh sách Sinh viên</h2>
+
+        <form class="mb-3" th:action="@{/admin/student}" method="get">
+            <input type="text" class="form-control" name="kw" placeholder="Tìm theo tên hoặc MSSV" />
+        </form>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Mã SV</th>
+                    <th>Họ tên</th>
+                    <th>Ngành học</th>
+                    <th>Khóa luận</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="s : ${students}">
+                    <td th:text="${s.userId.username}"></td>
+                    <td th:text="${s.userId.lastName + ' ' + s.userId.firstName}"></td>
+                    <td>
+                        <span th:each="m : ${s.majorSet}" th:text="${m.name}" th:unless="${#lists.isEmpty(s.majorSet)}"></span>
+                    </td>
+                    <td th:text="${s.thesisId != null ? s.thesisId.title : 'Chưa có'}"></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:attr="onclick=|editStudent('${s.id}', '${s.userId.username}', '${s.thesisId?.thesisId}', '${major?.majorId}')|">
+                            Sửa
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                                th:onclick="'deleteStudent(' + ${s.id} + ')'">
+                            Xoá
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success mb-3" onclick="openAddStudentModal()">➕ Thêm sinh viên</button>
+
+        <!-- Modal thêm/sửa -->
+        <div class="modal fade" id="StudentModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="StudentForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thông tin Sinh viên</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="studentId" />
+                            <select name="userId" class="form-select mb-2" required>
+                                <option value="">-- Chọn tài khoản sinh viên --</option>
+                                <option th:each="u : ${users}" th:value="${u.userId}" th:text="${u.lastName + ' ' + u.firstName + ' (' + u.username + ')'}"></option>
+                            </select>
+                            <select name="majorIds" class="form-select mb-2">
+                                <option th:each="m : ${majors}" th:value="${m.majorId}" th:text="${m.name}"></option>
+                            </select>
+                            <select name="thesisId" class="form-select mb-2">
+                                <option value="">-- Chọn khóa luận (tuỳ chọn) --</option>
+                                <option th:each="t : ${theses}" th:value="${t.thesisId}" th:text="${t.title}"></option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/Student.js}"></script>
+</body>
+</html>

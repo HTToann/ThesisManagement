@@ -76,13 +76,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board updateBoard(int boardId, Map<String, String> params) {
+    public Board updateBoard(int boardId, Map<String, String> payload) {
         Board b = this.boardRepo.getBoardById(boardId);
         if (b == null) {
             throw new IllegalArgumentException("Không tìm thấy board có id = " + boardId);
         }
-        String isLocked = params.get("isLocked");
-        if (isLocked.toUpperCase().trim().equals("TRUE")) {
+        String isLocked = payload.get("isLocked");
+        System.out.println("🧪 isLocked payload = " + isLocked);
+        if (isLocked != null && isLocked.trim().equalsIgnoreCase("true")) {
             b.setIsLocked(Boolean.TRUE);
             // 🔒 Khóa tất cả các đề tài thuộc hội đồng này
             List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);
@@ -96,7 +97,7 @@ public class BoardServiceImpl implements BoardService {
                 }
             }
         }
-        if (isLocked.toUpperCase().trim().equals("FALSE")) {
+        else if (isLocked != null && isLocked.trim().equalsIgnoreCase("false")) {
             b.setIsLocked(Boolean.FALSE);
             // 🔒 Khóa tất cả các đề tài thuộc hội đồng này
             List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);

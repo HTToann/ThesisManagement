@@ -1,32 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ts.controllers.api;
 
-//import com.ts.controllers.*;
 import com.ts.pojo.Thesis;
 import com.ts.services.ThesisService;
+import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author Lenovo
- */
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
@@ -55,9 +38,8 @@ public class ApiThesisController {
     }
 
     @PostMapping("/secure/thesis")
-    public ResponseEntity<?> createThesis(@RequestBody Map<String, String> payload, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+    public ResponseEntity<?> createThesis(@RequestBody Map<String, String> payload) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {
@@ -71,9 +53,8 @@ public class ApiThesisController {
     }
 
     @PutMapping("/secure/thesis/{id}")
-    public ResponseEntity<?> updateThesis(@PathVariable("id") int id, @RequestBody Map<String, String> payload, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+    public ResponseEntity<?> updateThesis(@PathVariable("id") int id, @RequestBody Map<String, String> payload) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {
@@ -87,9 +68,8 @@ public class ApiThesisController {
     }
 
     @DeleteMapping("/secure/thesis/{id}")
-    public ResponseEntity<?> deleteThesis(@PathVariable("id") int id, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role");
-        if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
+    public ResponseEntity<?> deleteThesis(@PathVariable("id") int id) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
         try {
@@ -102,5 +82,4 @@ public class ApiThesisController {
                     .body(Map.of("error", "Đã có lỗi xảy ra"));
         }
     }
-
 }

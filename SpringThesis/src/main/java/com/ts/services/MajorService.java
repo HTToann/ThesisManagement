@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface MajorService {
     Major getById(int id);
     Major getByName(String name);
+    List<Major> searchByName(String keyword);
     List<Major> getAllMajors();
     Major addMajor(@RequestBody Map<String,String> payload);
     Major updateMajor(int id,@RequestBody Map<String,String> payload);

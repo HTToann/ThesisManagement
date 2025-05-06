@@ -15,6 +15,7 @@ public interface FacultyRepository {
     Faculty getById(int id);
     Faculty getByName(String name);
     List<Faculty> getAllFaculties();
+    List<Faculty> searchByName(String keyword);
     Faculty addOrUpdate(Faculty f);
     void delete(int id);
 }

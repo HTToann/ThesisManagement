@@ -65,6 +65,18 @@ public class CriteriaRepositoryImpl implements CriteriaRepository {
     }
 
     @Override
+    public List<Criteria> searchByName(String keyword) {
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Criteria> cq = cb.createQuery(Criteria.class);
+        Root<Criteria> root = cq.from(Criteria.class);
+
+        cq.select(root).where(cb.like(root.get("name"), "%" + keyword + "%"));
+
+        return session.createQuery(cq).getResultList();
+    }
+
+    @Override
     public Criteria getByName(String name) {
         Session session = factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();

@@ -5,6 +5,7 @@
 package com.ts.repositories.impl;
 
 import com.ts.pojo.Thesis;
+import com.ts.pojo.ThesisGrade;
 import com.ts.pojo.ThesisLecturer;
 import com.ts.pojo.ThesisLecturerPK;
 import com.ts.pojo.Users;
@@ -72,6 +73,30 @@ public class ThesisLecturerRepositoryImpl implements ThesisLecturerRepository {
         Session session = factory.getObject().getCurrentSession();
         ThesisLecturerPK pk = new ThesisLecturerPK(thesisId, lecturerId);
         return session.get(ThesisLecturer.class, pk);
+    }
+
+    @Override
+    public List<ThesisLecturer> getAll() {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.createNamedQuery("ThesisLecturer.findAll", ThesisLecturer.class)
+                .getResultList();     
+    }
+
+    @Override
+    public void updateRole(ThesisLecturer ts) {
+          Session s = this.factory.getObject().getCurrentSession();
+          s.merge(ts);
+    }
+
+    @Override
+    public List<ThesisLecturer> getByThesisName(String kw) {
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<ThesisLecturer> cq = cb.createQuery(ThesisLecturer.class);
+        Root<ThesisLecturer> root = cq.from(ThesisLecturer.class);
+        cq.select(root).where(cb.like(cb.lower(root.get("thesis").get("title")), "%" + kw.toLowerCase() + "%"));
+
+        return session.createQuery(cq).getResultList();
     }
 
 }

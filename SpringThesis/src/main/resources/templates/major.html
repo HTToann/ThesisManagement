@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Ngành học</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+<div th:replace="base :: header"></div>
 
+<main class="container mt-4 p-4 bg-light border rounded shadow">
+    <h2 class="mb-4 text-center text-primary">Quản lý Ngành học</h2>
+
+    <form class="mb-3" th:action="@{/admin/major}" method="get">
+        <input type="text" class="form-control" name="kw" placeholder="Tìm theo tên ngành" />
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên ngành</th>
+            <th>Thuộc khoa</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${majors}">
+            <td th:text="${m.majorId}"></td>
+            <td th:text="${m.name}"></td>
+            <td th:text="${m.facultyId.name}"></td>
+            <td th:text="${#dates.format(m.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+            <td>
+                <button class="btn btn-warning btn-sm"
+                        th:attr="
+                        data-id=${m.majorId},
+                        data-name=${m.name},
+                        data-facultyid=${m.facultyId.facultyId}"
+                        onclick="editMajorFromButton(this)">
+                    Sửa
+                </button>
+                <button class="btn btn-danger btn-sm"
+                        th:onclick="'deleteMajor(' + ${m.majorId} + ')'">
+                    Xoá
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-success mb-3" onclick="openAddMajorModal()">➕ Thêm ngành học</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="MajorModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="MajorForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thông tin ngành học</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="majorId" />
+                        <input name="name" class="form-control mb-2" placeholder="Tên ngành học" required />
+                        <select name="facultyId" class="form-select mb-2" required>
+                            <option value="">-- Chọn khoa --</option>
+                            <option th:each="f : ${facultyList}"
+                                    th:value="${f.facultyId}"
+                                    th:text="${f.name}"></option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="base :: footer"></div>
+<script th:src="@{/js/Major.js}"></script>
+</body>
+</html>

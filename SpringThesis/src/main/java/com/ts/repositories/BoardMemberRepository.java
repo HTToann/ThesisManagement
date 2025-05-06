@@ -15,6 +15,8 @@ import java.util.List;
 public interface BoardMemberRepository {
     void addBoardMember(BoardMember member);
     List<BoardMember> getBoardMembersByBoardId(int boardId);
+    List<BoardMember> getAll();
     void removeBoardMember(int boardId,int lectureId);
+    void updateBoardMemberRole(int boardId, int lecturerId,String newRole);
     BoardMember getById(BoardMemberPK pk);
 }

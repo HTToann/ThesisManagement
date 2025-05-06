@@ -5,6 +5,7 @@
 package com.ts.services;
 
 import com.ts.pojo.Student;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,8 +13,10 @@ import java.util.Map;
  * @author Lenovo
  */
 public interface StudentService {
-    void insertStudent(Student student);
+    void insertStudent(Map<String, String> payload);
     Student getStudentByUserId(int userID);
+    List<Student> getStudentsByUsername(String kw);
+    List<Student> getAll();
     Student updateStudent(int id, Map<String, String> payload);
     void deleteStudent(int id);
 }

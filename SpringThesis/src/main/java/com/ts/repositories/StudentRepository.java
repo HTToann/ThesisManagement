@@ -5,6 +5,7 @@
 package com.ts.repositories;
 
 import com.ts.pojo.Student;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,9 +14,11 @@ import java.util.Map;
  */
 public interface StudentRepository {
     void insertStudent(Student s);
+    List<Student> getAll();
     Student getById(int id);
     public Student updateStudent(Student s);
     Student getByThesisId(int thesisId);
     Student getStudentByUserId(int userId);
+    List<Student> getStudentByUsername(String kw);
     void deleleStudent(int userId);
 }

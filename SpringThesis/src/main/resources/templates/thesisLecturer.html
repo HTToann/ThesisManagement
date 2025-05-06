@@ -1,1 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Phân công Giảng viên</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
 
+    <main class="container mt-4">
+        <h2 class="text-primary text-center">Phân công Giảng viên</h2>
+        <form class="mb-3" th:action="@{/admin/thesis-lecturer}" method="get">
+            <input type="text" class="form-control" name="kw" placeholder="Tìm theo tên khóa luận" />
+        </form>
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Khóa luận</th>
+                    <th>Giảng viên</th>
+                    <th>Vai trò</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tl : ${thesisLecturers}">
+                    <td th:text="${tl.thesis.title}"></td>
+                    <td th:text="${tl.users.lastName + ' ' + tl.users.firstName}"></td>
+                    <td th:text="${tl.lectureRole}"></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:attr="onclick=|editTL(${tl.thesisLecturerPK.thesisId}, ${tl.thesisLecturerPK.lecturerId}, '${tl.lectureRole}')|">
+                            Sửa
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                                th:onclick="'deleteTL(' + ${tl.thesisLecturerPK.thesisId} + ',' + ${tl.thesisLecturerPK.lecturerId} + ')'">
+                            Xoá
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success mb-2" onclick="openAddTLModal()">➕ Thêm phân công</button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="TLModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="TLForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thông tin phân công</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="mode" value="add" />
+                            <input type="hidden" name="oldLecturerId" /> <!-- 👈 quan trọng khi sửa -->
+
+                            <!-- Chọn Khóa luận -->
+                            <select name="thesisId" class="form-select mb-2" required>
+                                <option value="">-- Chọn Khóa luận --</option>
+                                <option th:each="t : ${theses}" th:value="${t.thesisId}" th:text="${t.title}"></option>
+                            </select>
+
+                            <!-- Chọn Giảng viên -->
+                            <select name="lecturerId" class="form-select mb-2" required>
+                                <option value="">-- Chọn Giảng viên --</option>
+                                <option th:each="l : ${lecturers}" th:value="${l.userId}" th:text="${l.lastName + ' ' + l.firstName}"></option>
+                            </select>
+
+                            <!-- Vai trò -->
+                            <select name="lectureRole" class="form-select mb-2" required>
+                                <option value="">-- Chọn vai trò --</option>
+                                <option value="ROLE_MAIN_ADVISOR">Giảng viên hướng dẫn chính</option>
+                                <option value="ROLE_CO_ADVISOR">Giảng viên đồng hướng dẫn</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/ThesisLecturer.js}"></script>
+</body>
+</html>

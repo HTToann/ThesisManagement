@@ -93,4 +93,9 @@ public class MajorServiceImpl implements MajorService {
         this.majorRepo.addOrUpdate(m);
         return m;
     }
+
+    @Override
+    public List<Major> searchByName(String keyword) {
+        return this.majorRepo.searchByName(keyword);
+    }
 }

@@ -15,7 +15,9 @@ public interface ThesisGradeRepository {
     void add(ThesisGrade tg);
     void update(ThesisGrade tg);
     void delete(int boardId, int thesisId, int lecturerId, int criteriaId);
+    List<ThesisGrade> getAll();
     List<ThesisGrade> getByThesisId(int thesisId);
+    List<ThesisGrade> getByBoardId(int boardId);
     List<ThesisGrade> getByLecturerAndBoard(int lecturerId, int boardId);
     ThesisGrade getByCompositeKey(int boardId, int thesisId, int lecturerId, int criteriaId);
 }

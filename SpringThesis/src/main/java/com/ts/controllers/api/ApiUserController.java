@@ -7,6 +7,7 @@ package com.ts.controllers.api;
 //import com.ts.controllers.*;
 import com.ts.pojo.Users;
 import com.ts.services.UsersService;
+import com.ts.utils.AuthUtils;
 import com.ts.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class ApiUserController {
 
     @Autowired
@@ -76,7 +81,7 @@ public class ApiUserController {
 
     @RequestMapping("/secure/users/profile")
     @ResponseBody
-    @CrossOrigin
+
     public ResponseEntity<Users> getProfile(Principal principal) {
         return new ResponseEntity<>(this.usersService.getUserByUsername(principal.getName()), HttpStatus.OK);
     }
@@ -112,13 +117,11 @@ public class ApiUserController {
     }
 
     @GetMapping("/secure/users/get_role_lecturer")
-    public ResponseEntity<?> getAllRoleLecturer(HttpServletRequest request) {
-        String role = (String) request.getAttribute("role"); // Lấy role từ token đã validate trước đó
-
-       if (!"ROLE_ADMIN".equals(role) && !"ROLE_MINISTRY".equals(role)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Bạn không có quyền"));
+    public ResponseEntity<?> getAllRoleLecturer() {
+        if (!AuthUtils.hasRole("ROLE_ADMIN") && !AuthUtils.hasRole("ROLE_MINISTRY")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
+
         return ResponseEntity.ok(this.usersService.getAllUsersRoleLecturer());
     }
 
@@ -129,14 +132,11 @@ public class ApiUserController {
 
     @DeleteMapping("/secure/users/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") int id, HttpServletRequest request) {
-        String role = (String) request.getAttribute("role"); // Lấy role từ token đã validate trước đó
+        if (!AuthUtils.hasRole("ROLE_ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
+        }
         try {
-            if (!"ROLE_ADMIN".equals(role)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(Map.of("error", "Bạn không có quyền!"));
-            }
-
-            this.usersService.deleteUsers(id);
+            usersService.deleteUsers(id);
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

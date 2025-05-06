@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Tiêu chí</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
 
+    <main class="container mt-4 p-4 bg-light border rounded shadow">
+        <h2 class="mb-4 text-center text-primary">Quản lý Tiêu chí</h2>
+
+        <form class="mb-3" th:action="@{/admin/criteria}" method="get">
+            <input type="text" class="form-control" name="kw" placeholder="Tìm theo tên tiêu chí" />
+        </form>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên tiêu chí</th>
+                    <th>Điểm tối đa</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${criteria}">
+                    <td th:text="${c.criteriaId}"></td>
+                    <td th:text="${c.name}"></td>
+                    <td th:text="${c.maxScore}"></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:attr="
+                                data-id=${c.criteriaId},
+                                data-name=${c.name},
+                                data-maxscore=${c.maxScore}"
+                                onclick="editCriteriaFromButton(this)">
+                            Sửa
+                        </button>
+                        <button class="btn btn-danger btn-sm"
+                                th:onclick="'deleteCriteria(' + ${c.criteriaId} + ')'">
+                            Xoá
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-success mb-3" onclick="openAddCriteriaModal()">➕ Thêm tiêu chí</button>
+
+        <!-- Modal thêm/sửa tiêu chí -->
+        <div class="modal fade" id="CriteriaModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="CriteriaForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tiêu chí</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="criteriaId" />
+                            <input name="name" class="form-control mb-2" placeholder="Tên tiêu chí" required />
+                            <input name="maxScore" class="form-control mb-2" type="number" placeholder="Điểm tối đa" required min="1" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+    <script th:src="@{/js/Criteria.js}"></script>
+</body>
+</html>

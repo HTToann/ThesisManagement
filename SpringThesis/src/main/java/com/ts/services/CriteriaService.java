@@ -15,6 +15,8 @@ import java.util.Map;
 public interface CriteriaService {
     List<Criteria> getAll();
     Criteria getById(int id);
+     List<Criteria> searchByName(String keyword);
+    Criteria getByName(String name);
     Criteria add(Map<String, String> payload);
     Criteria update(int id, Map<String, String> payload);
     void delete(int id);

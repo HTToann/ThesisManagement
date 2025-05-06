@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Khoa</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+<div th:replace="base :: header"></div>
 
+<main class="container mt-4 p-4 bg-light border rounded shadow">
+    <h2 class="mb-4 text-center text-primary">Quản lý Khoa</h2>
+
+    <form class="mb-3" th:action="@{/admin/faculty}" method="get">
+        <input type="text" class="form-control" name="kw" placeholder="Tìm theo tên khoa" />
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên khoa</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="f : ${faculty}">
+            <td th:text="${f.facultyId}"></td>
+            <td th:text="${f.name}"></td>
+            <td th:text="${#dates.format(f.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+            <td>
+                <button class="btn btn-warning btn-sm"
+                        th:attr="
+                        data-id=${f.facultyId},
+                        data-name=${f.name}"
+                        onclick="editFacultyFromButton(this)">
+                    Sửa
+                </button>
+                <button class="btn btn-danger btn-sm"
+                        th:onclick="'deleteFaculty(' + ${f.facultyId} + ')'">
+                    Xoá
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-success mb-3" onclick="openAddFacultyModal()">➕ Thêm khoa</button>
+
+    <!-- Modal thêm/sửa -->
+    <div class="modal fade" id="FacultyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="FacultyForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thông tin Khoa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="facultyId" />
+                        <input name="name" class="form-control mb-2" placeholder="Tên khoa" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="base :: footer"></div>
+<script th:src="@{/js/Faculty.js}"></script>
+</body>
+</html>

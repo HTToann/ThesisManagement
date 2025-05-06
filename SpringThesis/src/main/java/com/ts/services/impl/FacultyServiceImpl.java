@@ -26,7 +26,10 @@ public class FacultyServiceImpl implements FacultyService {
     public Faculty getById(int id) {
         return this.repo.getById(id);
     }
-
+    @Override
+    public Faculty getByName(String name) {
+        return this.repo.getByName(name);
+    }
     @Override
     public List<Faculty> getAll() {
         return this.repo.getAllFaculties();
@@ -68,6 +71,11 @@ public class FacultyServiceImpl implements FacultyService {
         }
         f.setName(name.trim());
         return this.repo.addOrUpdate(f);
+    }
+
+    @Override
+    public List<Faculty> searchByName(String keyword) {
+        return this.repo.searchByName(keyword);
     }
 
 }

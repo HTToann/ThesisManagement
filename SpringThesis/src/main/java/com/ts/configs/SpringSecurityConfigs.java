@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,6 +35,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableTransactionManagement
 @EnableWebSecurity
+//ủy quyền để check role
 @ComponentScan(basePackages = {
     "com.ts.controllers",
     "com.ts.controllers.api",
@@ -57,12 +58,9 @@ public class SpringSecurityConfigs {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(c -> c.disable()).authorizeHttpRequests(requests
                 -> requests.requestMatchers("/", "/home").authenticated()
-                        .requestMatchers("/users/login", "/users/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/secure/users/**").hasRole("MINISTRY")
-                        // Only ADMIN can delete users
-                        .requestMatchers("/api/secure/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/secure/users/**").hasRole("MINISTRY")
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/users/login").permitAll()
+                        .requestMatchers("/api/users/register").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.loginPage("/login")

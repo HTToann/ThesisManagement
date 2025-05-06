@@ -15,6 +15,7 @@ public interface CriteriaRepository {
     List<Criteria> getAll();
     Criteria getById(int id);
     Criteria getByName(String name);
+    List<Criteria> searchByName(String keyword);
     Criteria add(Criteria c);
     Criteria update(Criteria c);
     void delete(int id);

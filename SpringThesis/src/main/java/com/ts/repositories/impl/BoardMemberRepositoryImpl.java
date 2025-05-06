@@ -36,6 +36,15 @@ public class BoardMemberRepositoryImpl implements BoardMemberRepository {
     }
 
     @Override
+    public void updateBoardMemberRole(int boardId, int lecturerId,String newRole) {
+        Session session = factory.getObject().getCurrentSession();
+        BoardMemberPK pk = new BoardMemberPK(boardId, lecturerId);
+        BoardMember member = session.get(BoardMember.class, pk);
+        member.setRoleInBoard(newRole);
+        session.merge(member);
+    }
+
+    @Override
     public List<BoardMember> getBoardMembersByBoardId(int boardId) {
         Session session = factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -59,6 +68,12 @@ public class BoardMemberRepositoryImpl implements BoardMemberRepository {
     public BoardMember getById(BoardMemberPK pk) {
         Session session = factory.getObject().getCurrentSession();
         return session.get(BoardMember.class, pk);
+    }
+
+    @Override
+    public List<BoardMember> getAll() {
+        Session session = factory.getObject().getCurrentSession();
+        return session.createNamedQuery("BoardMember.findAll", BoardMember.class).getResultList();
     }
 
 }

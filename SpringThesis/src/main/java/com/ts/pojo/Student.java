@@ -7,6 +7,7 @@ package com.ts.pojo;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +39,7 @@ public class Student implements Serializable {
     @JoinTable(name = "student_major", joinColumns = {
         @JoinColumn(name = "student_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "major_id", referencedColumnName = "major_id")})
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Major> majorSet;
 
     private static final long serialVersionUID = 1L;

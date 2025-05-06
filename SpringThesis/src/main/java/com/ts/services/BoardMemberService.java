@@ -14,7 +14,9 @@ import java.util.Map;
  */
 public interface BoardMemberService {
     void addBoardMember(BoardMember member);
+    List<BoardMember> getAll();
     BoardMember add(Map<String,String> payload);
     List<BoardMember> getBoardMembersByBoardId(int boardId);
     void removeBoardMember(int boardId,int lectureId);
+    void updateRole(int boardId, int lecturerId,Map<String, String> payload);
 }
