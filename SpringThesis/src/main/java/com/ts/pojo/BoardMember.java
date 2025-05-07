@@ -4,6 +4,7 @@
  */
 package com.ts.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -41,9 +42,11 @@ public class BoardMember implements Serializable {
     @Column(name = "role_in_board")
     private String roleInBoard;
     @JoinColumn(name = "board_id", referencedColumnName = "board_id", insertable = false, updatable = false)
+    @JsonIgnore
     @ManyToOne(optional = false)
     private Board board;
     @JoinColumn(name = "lecturer_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JsonIgnore
     @ManyToOne(optional = false)
     private Users users;
 
