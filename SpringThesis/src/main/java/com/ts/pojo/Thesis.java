@@ -82,6 +82,7 @@ public class Thesis implements Serializable {
     private Set<ThesisLecturer> thesisLecturerSet;
     @JoinColumn(name = "board_id", referencedColumnName = "board_id")
     @ManyToOne
+    @JsonIgnore
     private Board boardId;
 
     @PrePersist
