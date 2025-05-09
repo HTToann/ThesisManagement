@@ -74,6 +74,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student updateStudent(int id, Map<String, String> payload) {
+        System.out.println("ID"+id);
         Student s = repo.getById(id);
         if (s == null) {
             throw new IllegalArgumentException("Không tìm thấy student");

@@ -51,10 +51,10 @@ public class Board implements Serializable {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "board")
     private Set<ThesisGrade> thesisGradeSet;
-//    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "board",fetch = FetchType.EAGER)
     private Set<BoardMember> boardMemberSet;
-//    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "boardId",fetch = FetchType.EAGER)
     private Set<Thesis> thesisSet;
 
