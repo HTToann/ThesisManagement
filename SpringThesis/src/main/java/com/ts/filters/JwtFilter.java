@@ -34,23 +34,21 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
         if (uri.startsWith(String.format("%s/api/secure", httpRequest.getContextPath())) == true) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
-                // Đã login bằng session → không cần JWT
-                chain.doFilter(request, response);
-                return;
-            }
+
             String header = httpRequest.getHeader("Authorization");
 
-            if (header == null || !header.startsWith("Bearer ")) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
-                return;
-            } else {
-                String token = header.substring(7);
+//            if (header == null || !header.startsWith("Bearer ")) {
+//                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header.");
+//                return;
+//            }
+            if (header != null && header.startsWith("Bearer ")) {
                 try {
+                    // ✅ Luôn xóa context cũ (tránh giữ session từ login trước)
+                    SecurityContextHolder.clearContext();
+                    String token = header.substring(7);
                     String username = JwtUtils.validateTokenAndGetUsername(token);
                     String role = JwtUtils.getRoleFromToken(token);  // ➡️ Bạn cần viết thêm hàm lấy role
-                    
+
                     if (username != null) {
                         httpRequest.setAttribute("username", username);
                         // ⚠️ Đây là bước bạn còn thiếu: convert role -> authority
@@ -64,16 +62,22 @@ public class JwtFilter implements Filter {
                         return;
                     }
                 } catch (Exception e) {
-                    // Log lỗi
+                    // Token sai
+                    ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token không hợp lệ hoặc hết hạn");
+                    return;
                 }
             }
+            // Nếu KHÔNG có token → thử kiểm tra session login (cho phép fallback admin login)
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+                chain.doFilter(request, response);
+                return;
+            }
 
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                    "Token không hợp lệ hoặc hết hạn");
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Yêu cầu xác thực.");
             return;
         }
 
         chain.doFilter(request, response);
     }
-
 }

@@ -99,29 +99,6 @@ public class BoardMemberServiceImpl implements BoardMemberService {
 
         repo.addBoardMember(member);
         sendGmailToMember(member, role, boardId);
-//        // Kiểm tra lại tổng số thành viên sau khi thêm (đảm bảo tối thiểu 3)
-//        List<BoardMember> updatedMembers = repo.getBoardMembersByBoardId(boardId);
-//        if (updatedMembers.size() < 3) {
-//            throw new IllegalArgumentException("Hội đồng phải có ít nhất 3 thành viên.");
-//        }
-        // ✅ Gửi mail trước khi thêm (có thể đặt sau nếu cần đảm bảo persist thành công rồi mới gửi)
-//        String email = member.getUsers().getEmail();
-//        String subject = "Thông báo phân công vào hội đồng phản biện";
-//        String content = String.format("""
-//        Xin chào %s %s,
-//
-//        Bạn vừa được phân công làm %s trong hội đồng phản biện (Board ID: %d).
-//
-//        Trân trọng,
-//        Hệ thống quản lý khóa luận.
-//        """,
-//                member.getUsers().getFirstName(),
-//                member.getUsers().getLastName(),
-//                role,
-//                boardId
-//        );
-
-//        emailService.sendEmail(email, subject, content);
     }
 
     @Override
@@ -181,6 +158,11 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         String newRole = payload.get("roleInBoard");
         if (newRole == null || newRole.trim().isEmpty()) {
             throw new IllegalArgumentException("Vai trò không được để trống.");
+        }
+        List<String> validRoles = List.of("ROLE_CHAIRMAIN", "ROLE_SECRETARY", "ROLE_COUNTER", "ROLE_MEMBERS");
+
+        if (!validRoles.contains(newRole)) {
+            throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ được chọn: ROLE_CHAIRMAIN, ROLE_SECRETARY, ROLE_COUNTER, ROLE_MEMBERS.");
         }
         repo.updateBoardMemberRole(boardId, lecturerId, newRole);
     }

@@ -4,6 +4,7 @@
  */
 package com.ts.repositories.impl;
 
+import com.ts.pojo.Board;
 import com.ts.pojo.BoardMember;
 import com.ts.pojo.BoardMemberPK;
 import com.ts.repositories.BoardMemberRepository;
@@ -36,7 +37,7 @@ public class BoardMemberRepositoryImpl implements BoardMemberRepository {
     }
 
     @Override
-    public void updateBoardMemberRole(int boardId, int lecturerId,String newRole) {
+    public void updateBoardMemberRole(int boardId, int lecturerId, String newRole) {
         Session session = factory.getObject().getCurrentSession();
         BoardMemberPK pk = new BoardMemberPK(boardId, lecturerId);
         BoardMember member = session.get(BoardMember.class, pk);
@@ -57,11 +58,13 @@ public class BoardMemberRepositoryImpl implements BoardMemberRepository {
     @Override
     public void removeBoardMember(int boardId, int lectureId) {
         Session session = factory.getObject().getCurrentSession();
-        BoardMemberPK pk = new BoardMemberPK(boardId, lectureId);
+        BoardMemberPK pk = new BoardMemberPK(boardId, lectureId);    
         BoardMember member = session.get(BoardMember.class, pk);
-        if (member != null) {
-            session.remove(member);
+        Board board = member.getBoard();
+        if (board != null) {
+            board.getBoardMemberSet().remove(member);
         }
+        session.remove(member);
     }
 
     @Override

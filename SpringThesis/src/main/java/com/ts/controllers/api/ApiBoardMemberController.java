@@ -80,7 +80,7 @@ public class ApiBoardMemberController {
             @PathVariable("lecturerId") int lecturerId) {
         if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Bạn khô  ng có quyền."));
+                    .body(Map.of("error", "Bạn không có quyền."));
         }
         try {
             boardMemberService.removeBoardMember(boardId, lecturerId);
