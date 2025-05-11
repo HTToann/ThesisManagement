@@ -1,58 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <style>
-        /* Nhúng font Roboto hỗ trợ tiếng Việt */
-        @font-face {
-            font-family: 'Roboto';
-            src: url('fonts/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
-        }
+    <head>
+        <meta charset="UTF-8"/>
+        <style>
+            /* Nhúng font Roboto hỗ trợ tiếng Việt */
+            @font-face {
+                font-family: 'Roboto';
+                src: url('fonts/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+            }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
+            body {
+                font-family: 'Roboto', sans-serif;
+            }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1em;
-        }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1em;
+            }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
 
-        th {
-            background-color: #f2f2f2;
-        }
+            th {    
+                background-color: #f2f2f2;
+            }
 
-        h2 {
-            text-align: center;
-        }
-    </style>
+            h2 {
+                text-align: center;
+            }
+        </style>
+        <title>Stats</title>
+    <th:block th:replace="base :: styles"></th:block>
 </head>
 <body>
-    <h2>BÁO CÁO THỐNG KÊ ĐIỂM KHÓA LUẬN</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Ngành</th>
-                <th>Năm</th>
-                <th>Số lượng đề tài</th>
-                <th>Điểm trung bình</th>
-            </tr>
-        </thead>
-        <tbody>
-        <tr th:each="row : ${stats}">
-            <td th:text="${row.major}"></td>
-            <td th:text="${row.year}"></td>
-            <td th:text="${row.totalTheses}"></td>
-            <td th:text="${row.avgScore}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div th:replace="base :: header"></div>
+    <main class="container mt-4 p-4 bg-light border rounded shadow">
+        <h2>BÁO CÁO THỐNG KÊ ĐIỂM KHÓA LUẬN</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ngành</th>
+                    <th>Năm</th>
+                    <th>Số lượng đề tài</th>
+                    <th>Điểm trung bình</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="row : ${stats}">
+                    <td th:text="${row.major}"></td>
+                    <td th:text="${row.year}"></td>
+                    <td th:text="${row.totalTheses}"></td>
+                    <td th:text="${row.avgScore}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <div th:replace="base :: footer"></div>
 </body>
 </html>

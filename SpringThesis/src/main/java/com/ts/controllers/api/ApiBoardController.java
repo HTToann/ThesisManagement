@@ -1,4 +1,4 @@
-package com.ts.controllers.api;
+    package com.ts.controllers.api;
 
 import com.ts.pojo.Board;
 import com.ts.services.BoardService;

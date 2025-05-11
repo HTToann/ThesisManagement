@@ -60,10 +60,11 @@ public class SpringSecurityConfigs {
                 .csrf(c -> c.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))// Cho phép session nếu cần (form login cần)
                 .authorizeHttpRequests(requests
-                -> requests.requestMatchers("/", "/home").authenticated()   // Web admin cần login
+                        -> requests.requestMatchers("/", "/home").authenticated() // Web admin cần login
                         .requestMatchers("/api/users/login").permitAll()
+                        .requestMatchers("/swagger", "/webjars/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/users/register").permitAll()
-                        .requestMatchers("/api/**").permitAll()   // API dùng JWT
+                        .requestMatchers("/api/**").permitAll() // API dùng JWT
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.loginPage("/login")
@@ -108,7 +109,7 @@ public class SpringSecurityConfigs {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of("http://localhost:3000/")); // frontend origin
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true); // Nếu dùng cookie/session
