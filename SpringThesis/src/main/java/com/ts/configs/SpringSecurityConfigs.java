@@ -62,7 +62,6 @@ public class SpringSecurityConfigs {
                 .authorizeHttpRequests(requests
                         -> requests.requestMatchers("/", "/home").authenticated() // Web admin cần login
                         .requestMatchers("/api/users/login").permitAll()
-                        .requestMatchers("/swagger", "/webjars/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/api/**").permitAll() // API dùng JWT
                         .anyRequest().permitAll())

@@ -24,7 +24,6 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
                 HibernateConfigs.class,
                 SpringSecurityConfigs.class,
                 MailSenderConfig.class,
-//                OpenApiConfig.class
             };
         }
 
