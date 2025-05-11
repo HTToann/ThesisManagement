@@ -15,40 +15,40 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  *
  * @author Lenovo
  */
-public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherServletInitializer{
+    public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherServletInitializer{
 
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {
-            ThymeleafConfig.class,
-            HibernateConfigs.class,
-            SpringSecurityConfigs.class,
-            MailSenderConfig.class
-        };
-    }
+        @Override
+        protected Class<?>[] getRootConfigClasses() {
+            return new Class[] {
+                ThymeleafConfig.class,
+                HibernateConfigs.class,
+                SpringSecurityConfigs.class,
+                MailSenderConfig.class,
+            };
+        }
 
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {
-            WebAppContextConfigs.class
-        };
-    }
+        @Override
+        protected Class<?>[] getServletConfigClasses() {
+            return new Class[] {
+                WebAppContextConfigs.class
+            };
+        }
 
-    @Override
-    protected String[] getServletMappings() {
-        return new String[] {"/"};
-    }
-    @Override
-    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
-        String location = "/";
-        long maxFileSize = 5242880; // 5MB
-        long maxRequestSize = 20971520; // 20MB
-        int fileSizeThreshold = 0;
+        @Override
+        protected String[] getServletMappings() {
+            return new String[] {"/"};
+        }
+        @Override
+        protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+            String location = "/";
+            long maxFileSize = 5242880; // 5MB
+            long maxRequestSize = 20971520; // 20MB
+            int fileSizeThreshold = 0;
 
-        registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
+            registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
+        }
+        @Override
+        protected Filter[] getServletFilters() {
+            return new Filter[] { new JwtFilter() }; // Filter sẽ áp dụng cho mọi request
+        }
     }
-    @Override
-    protected Filter[] getServletFilters() {
-        return new Filter[] { new JwtFilter() }; // Filter sẽ áp dụng cho mọi request
-    }
-}

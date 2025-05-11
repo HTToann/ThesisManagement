@@ -45,44 +45,43 @@ public class ApiStatsController {
         }
 
         try { // 🔹 Dữ liệu mock
-            List<Map<String, Object>> mockStats = new ArrayList<>();
+//            List<Map<String, Object>> mockStats = new ArrayList<>();
+//
+//            Map<String, Object> row1 = Map.of(
+//                    "major", "Công nghệ thông tin",
+//                    "year", 2023,
+//                    "totalTheses", 12,
+//                    "avgScore", 8.2
+//            );
+//            Map<String, Object> row2 = Map.of(
+//                    "major", "Khoa học máy tính",
+//                    "year", 2024,
+//                    "totalTheses", 9,
+//                    "avgScore", 7.9
+//            );
+//            Map<String, Object> row3 = Map.of(
+//                    "major", "Hệ thống thông tin",
+//                    "year", 2025,
+//                    "totalTheses", 14,
+//                    "avgScore", 8.6
+//            );
+//
+//            mockStats.add(row1);
+//            mockStats.add(row2);
+//            mockStats.add(row3);
+            List<Map<String, Object>> stats = statsService.getStatsByMajorAndYear();
+//            byte[] pdf = pdfService.exportStatsToPdf(mockStats);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_PDF);
+//            headers.setContentDisposition(ContentDisposition.attachment().filename("thong_ke_khoa_luan.pdf").build());
 
-            Map<String, Object> row1 = Map.of(
-                    "major", "Công nghệ thông tin",
-                    "year", 2023,
-                    "totalTheses", 12,
-                    "avgScore", 8.2
-            );
-            Map<String, Object> row2 = Map.of(
-                    "major", "Khoa học máy tính",
-                    "year", 2024,
-                    "totalTheses", 9,
-                    "avgScore", 7.9
-            );
-            Map<String, Object> row3 = Map.of(
-                    "major", "Hệ thống thông tin",
-                    "year", 2025,
-                    "totalTheses", 14,
-                    "avgScore", 8.6
-            );
-
-            mockStats.add(row1);
-            mockStats.add(row2);
-            mockStats.add(row3);
-//            List<Map<String, Object>> stats = statsService.getStatsByMajorAndYear();
-            byte[] pdf = pdfService.exportStatsToPdf(mockStats);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(ContentDisposition.attachment().filename("thong_ke_khoa_luan.pdf").build());
-
-            return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+            return new ResponseEntity<>(stats, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
     }
-//statsService.getGradesSummaryByBoardAndThesis(boardId, thesisId);
 
     @GetMapping("/pdf/board-summary")
     public ResponseEntity<?> exportBoardSummary(
@@ -94,30 +93,33 @@ public class ApiStatsController {
         }
 
         try {
-            List<Map<String, Object>> summaries = new ArrayList<>();
-            Map<String, Object> row1 = new HashMap<>();
-            row1.put("lecturerName", "Nguyễn Văn A");
-            row1.put("avgScore", 8.5);
-            row1.put("role", "ROLE_CHAIRMAIN");
-
-            Map<String, Object> row2 = new HashMap<>();
-            row2.put("lecturerName", "Trần Thị B");
-            row2.put("avgScore", 7.8);
-            row2.put("role", "ROLE_SECRETARY");
-
-            Map<String, Object> row3 = new HashMap<>();
-            row3.put("lecturerName", "Lê Văn C");
-            row3.put("avgScore", 9.0);
-            row3.put("role", "ROLE_COUNTER");
-
-            summaries.add(row1);
-            summaries.add(row2);
-            summaries.add(row3);
+//            List<Map<String, Object>> summaries = new ArrayList<>();
+//            Map<String, Object> row1 = new HashMap<>();
+//            row1.put("lecturerName", "Nguyễn Văn A");
+//            row1.put("avgScore", 8.5);
+//            row1.put("role", "ROLE_CHAIRMAIN");
+//
+//            Map<String, Object> row2 = new HashMap<>();
+//            row2.put("lecturerName", "Trần Thị B");
+//            row2.put("avgScore", 7.8);
+//            row2.put("role", "ROLE_SECRETARY");
+//
+//            Map<String, Object> row3 = new HashMap<>();
+//            row3.put("lecturerName", "Lê Văn C");
+//            row3.put("avgScore", 9.0);
+//            row3.put("role", "ROLE_COUNTER");
+//
+//            summaries.add(row1);
+//            summaries.add(row2);
+//            summaries.add(row3);
+//            boardId=2;
+//            thesisId=6;
+            List<Map<String, Object>> stats = statsService.getGradesSummaryByBoardAndThesis(boardId, thesisId);
             int year = java.time.LocalDate.now().getYear();
             String currentDate = java.time.LocalDate.now()
                     .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-            byte[] pdfBytes = pdfService.exportBoardSummaryToPdf(summaries, year, currentDate, boardId);
+            byte[] pdfBytes = pdfService.exportBoardSummaryToPdf(stats, year, currentDate, boardId);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
@@ -127,6 +129,8 @@ public class ApiStatsController {
                     .build());
 
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

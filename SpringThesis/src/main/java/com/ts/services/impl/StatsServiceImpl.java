@@ -4,7 +4,9 @@
  */
 package com.ts.services.impl;
 
+import com.ts.repositories.BoardRepository;
 import com.ts.repositories.StatsRepository;
+import com.ts.repositories.ThesisRepository;
 import com.ts.services.StatsService;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +24,10 @@ public class StatsServiceImpl implements StatsService {
 
     @Autowired
     private StatsRepository statsRepo;
+    @Autowired
+    private BoardRepository boardRepo;
+    @Autowired
+    private ThesisRepository thesisRepo;
 
     @Override
     public List<Map<String, Object>> getStatsByMajorAndYear() {
@@ -41,6 +47,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<Map<String, Object>> getGradesSummaryByBoardAndThesis(int boardId, int thesisId) {
-            return this.statsRepo.getGradesSummaryByBoardAndThesis(boardId, thesisId);
+        if (boardRepo.getBoardById(boardId) == null || thesisRepo.getThesisById(thesisId) == null) {
+            throw new IllegalArgumentException("Board hoặc Thesis không tồn tại");
+        }
+        return this.statsRepo.getGradesSummaryByBoardAndThesis(boardId, thesisId);
     }
 }

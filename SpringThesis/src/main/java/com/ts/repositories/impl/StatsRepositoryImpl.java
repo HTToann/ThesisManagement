@@ -6,6 +6,7 @@ package com.ts.repositories.impl;
 
 import com.ts.pojo.Board;
 import com.ts.pojo.BoardMember;
+import com.ts.pojo.Major;
 import com.ts.pojo.Student;
 import com.ts.pojo.Thesis;
 import com.ts.pojo.ThesisGrade;
@@ -48,21 +49,22 @@ public class StatsRepositoryImpl implements StatsRepository {
         CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
 
         Root<Thesis> thesisRoot = cq.from(Thesis.class);
-        Join<Thesis, Student> studentJoin = thesisRoot.join("studentSet"); // assuming mappedBy="thesis" in Student
-        Join<Thesis, ThesisGrade> gradeJoin = thesisRoot.join("thesisGradeSet"); // assuming mappedBy="thesis" in ThesisGrade
+        Join<Thesis, Student> studentJoin = thesisRoot.join("studentSet");
+        Join<Student, Major> majorJoin = studentJoin.join("majorSet");
+        Join<Thesis, ThesisGrade> gradeJoin = thesisRoot.join("thesisGradeSet");
 
-        Path<String> majorPath = studentJoin.get("major");
+        Path<String> majorName = majorJoin.get("name");
         Path<Integer> yearPath = thesisRoot.get("year");
         Expression<Long> thesisCount = cb.countDistinct(thesisRoot.get("thesisId"));
         Expression<Double> avgScore = cb.avg(gradeJoin.get("score"));
 
         cq.multiselect(
-                majorPath,
+                majorName,
                 yearPath,
                 thesisCount,
                 avgScore
         );
-        cq.groupBy(majorPath, yearPath);
+        cq.groupBy(majorName, yearPath);
 
         return session.createQuery(cq).getResultList();
     }

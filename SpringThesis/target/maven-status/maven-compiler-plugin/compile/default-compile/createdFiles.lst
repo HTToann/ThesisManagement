@@ -87,6 +87,7 @@ com\ts\controllers\MajorController.class
 com\ts\utils\JwtUtils.class
 com\ts\controllers\api\ApiUserController.class
 com\ts\controllers\api\ApiThesisController.class
+com\ts\controllers\StatsController.class
 com\ts\controllers\BoardController.class
 com\ts\services\MajorService.class
 com\ts\configs\WebAppContextConfigs.class
