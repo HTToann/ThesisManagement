@@ -200,4 +200,22 @@ public class ThesisServiceImpl implements ThesisService {
     public List<Thesis> getThesisByName(String kw) {
         return this.thesisRepo.getThesisByName(kw);
     }
+
+    @Override
+    public Thesis updateBrowsingThesis(int id, Map<String, String> payload) {
+        Thesis t = this.thesisRepo.getThesisById(id);
+        if (t == null) {
+            throw new IllegalArgumentException("Không tìm thấy đề tài.");
+        }
+        String isLocked = payload.get("isLocked");
+
+        if (isLocked != null && isLocked.trim().equalsIgnoreCase("true")) {
+            t.setIsLocked(Boolean.TRUE);
+        } else if (isLocked != null && isLocked.trim().equalsIgnoreCase("false")) {
+            t.setIsLocked(Boolean.FALSE);
+        } else {
+            throw new IllegalArgumentException("Trạng thái không được để trống");
+        }
+        return this.thesisRepo.addOrUpdate(t);
+    }
 }

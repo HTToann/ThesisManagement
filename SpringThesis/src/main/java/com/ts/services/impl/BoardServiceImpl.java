@@ -82,14 +82,13 @@ public class BoardServiceImpl implements BoardService {
             throw new IllegalArgumentException("Không tìm thấy board có id = " + boardId);
         }
         String isLocked = payload.get("isLocked");
-        System.out.println("🧪 isLocked payload = " + isLocked);
         if (isLocked != null && isLocked.trim().equalsIgnoreCase("true")) {
             b.setIsLocked(Boolean.TRUE);
             // 🔒 Khóa tất cả các đề tài thuộc hội đồng này
             List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);
             for (Thesis t : theses) {
-                t.setIsLocked(Boolean.TRUE);
-                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
+//                t.setIsLocked(Boolean.TRUE);
+//                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
                 // 🔍 Tìm student thuộc thesis này
                 Student student = studentRepo.getByThesisId(t.getThesisId());
                 if (student != null && student.getUserId() != null) {
@@ -100,11 +99,11 @@ public class BoardServiceImpl implements BoardService {
         else if (isLocked != null && isLocked.trim().equalsIgnoreCase("false")) {
             b.setIsLocked(Boolean.FALSE);
             // 🔒 Khóa tất cả các đề tài thuộc hội đồng này
-            List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);
-            for (Thesis t : theses) {
-                t.setIsLocked(Boolean.FALSE);
-                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
-            }
+//            List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);
+//            for (Thesis t : theses) {
+//                t.setIsLocked(Boolean.FALSE);
+//                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
+//            }
         }
         return this.boardRepo.updateBoard(b);
     }
