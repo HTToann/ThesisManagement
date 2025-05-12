@@ -66,6 +66,20 @@ public class ApiThesisController {
                     .body(Map.of("error", "Đã có lỗi xảy ra"));
         }
     }
+    @PatchMapping("/secure/thesis/{id}")
+    public ResponseEntity<?> updateBrowsing(@PathVariable("id") int id, @RequestBody Map<String, String> payload) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
+        }
+        try {
+            return ResponseEntity.ok(thesisService.updateBrowsingThesis(id, payload));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã có lỗi xảy ra"));
+        }
+    }
 
     @DeleteMapping("/secure/thesis/{id}")
     public ResponseEntity<?> deleteThesis(@PathVariable("id") int id) {
