@@ -34,6 +34,22 @@ public class ApiThesisLecturerController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<?> getLecturersByThesisName(@RequestParam("keyword") String keyword) {
+        if (AuthUtils.hasRole("ROLE_STUDENT")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
+        }
+        try {
+            List<ThesisLecturer> thesisLecturer = this.thesisLecturerService.getByThesisName(keyword);
+            if (thesisLecturer == null) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.ok(thesisLecturer);
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Đã xảy ra lỗi"));
+        }
+    }
     @GetMapping("/{thesisId}")
     public ResponseEntity<?> getLecturers(@PathVariable("thesisId") int thesisId) {
         if (AuthUtils.hasRole("ROLE_STUDENT")) {

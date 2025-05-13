@@ -3,6 +3,7 @@ package com.ts.controllers.api;
 import com.ts.pojo.Faculty;
 import com.ts.services.FacultyService;
 import com.ts.utils.AuthUtils;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,19 @@ public class ApiFacultyController {
                     .body(Map.of("error", "Đã xảy ra lỗi."));
         }
     }
-
+    @GetMapping("/search-faculty")
+    public ResponseEntity<?> getFacultyByName(@RequestParam("keyword") String keyword) {
+        try {
+            List<Faculty> t = facultyService.searchByName(keyword);
+            if (t == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy.");
+            }
+            return ResponseEntity.ok(t);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi."));
+        }
+    }
     @GetMapping("/faculty/all")
     public ResponseEntity<?> getAll() {
         try {
