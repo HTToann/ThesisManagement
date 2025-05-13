@@ -4,6 +4,7 @@ import com.ts.pojo.Thesis;
 import com.ts.services.ThesisService;
 import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,20 @@ public class ApiThesisController {
     @GetMapping("/thesis")
     public ResponseEntity<?> getAllTheses() {
         return ResponseEntity.ok(thesisService.getAllThesis());
+    }
+
+    @GetMapping("/search-thesis")
+    public ResponseEntity<?> getThesisByName(@RequestParam("keyword") String keyword) {
+        try {
+            List<Thesis> t = thesisService.getThesisByName(keyword);
+            if (t == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy.");
+            }
+            return ResponseEntity.ok(t);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi."));
+        }
     }
 
     @GetMapping("/thesis/{id}")
@@ -66,6 +81,7 @@ public class ApiThesisController {
                     .body(Map.of("error", "Đã có lỗi xảy ra"));
         }
     }
+
     @PatchMapping("/secure/thesis/{id}")
     public ResponseEntity<?> updateBrowsing(@PathVariable("id") int id, @RequestBody Map<String, String> payload) {
         if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {

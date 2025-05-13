@@ -88,7 +88,9 @@ public class UsersServiceImpl implements UsersService {
         if (password == null || password.trim().isEmpty()) {
             throw new IllegalArgumentException("Password không được để trống");
         }
-
+        if (password.length() < 6) {
+            throw new IllegalArgumentException("Password không được có độ dài < 6");
+        }
         if (email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Email không được để trống");
         }
@@ -179,7 +181,7 @@ public class UsersServiceImpl implements UsersService {
             MultipartFile avatar
     ) {
         Users u = this.repo.getUserById(id);
-        
+
         if (u == null) {
             throw new IllegalArgumentException("Không tìm thấy user có id = " + id);
         }
@@ -189,16 +191,22 @@ public class UsersServiceImpl implements UsersService {
         if (params.containsKey("lastName")) {
             u.setLastName(params.get("lastName").trim());
         }
+
         if (params.containsKey("password")) {
-            u.setPassword(params.get("password").trim());
+            String password = params.get("password").trim();
+            if (password.length() < 6) {
+                throw new IllegalArgumentException("Password không được có độ dài < 6");
+            }
+            u.setPassword(password);
         }
+
         if (params.containsKey("phone")) {
             u.setPhone(params.get("phone").trim());
         }
         if (params.containsKey("email")) {
             u.setEmail(params.get("email").trim());
         }
-          String facultyIdStr = params.get("facultyId");
+        String facultyIdStr = params.get("facultyId");
         if (facultyIdStr == null || facultyIdStr.trim().isEmpty()) {
             throw new IllegalArgumentException("FacultyId không được trống");
         }

@@ -4,6 +4,7 @@ import com.ts.pojo.Student;
 import com.ts.services.StudentService;
 import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,20 @@ public class ApiStudentController {
                         .body(Map.of("error", "User không tồn tại!"));
             }
             return ResponseEntity.ok(s);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi."));
+        }
+    }
+
+    @GetMapping("/search-student")
+    public ResponseEntity<?> getStudentByName(@RequestParam("keyword") String keyword) {
+        try {
+            List<Student> t = service.getStudentsByUsername(keyword);
+            if (t == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy.");
+            }
+            return ResponseEntity.ok(t);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Đã xảy ra lỗi."));
