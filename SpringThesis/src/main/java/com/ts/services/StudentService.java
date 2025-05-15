@@ -15,6 +15,7 @@ import java.util.Map;
 public interface StudentService {
     void insertStudent(Map<String, String> payload);
     Student getStudentByUserId(int userID);
+    List<Student> getStudentsByThesisId(int thesisId);
     List<Student> getStudentsByUsername(String kw);
     List<Student> getAll();
     Student updateStudent(int id, Map<String, String> payload);

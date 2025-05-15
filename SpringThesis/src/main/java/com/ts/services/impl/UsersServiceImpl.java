@@ -72,6 +72,8 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users insertUser(Map<String, String> params, MultipartFile avatar) {
         Users u = new Users();
+
+
         String firstName = params.get("firstName");
         String lastName = params.get("lastName");
         String username = params.get("username");
@@ -81,58 +83,74 @@ public class UsersServiceImpl implements UsersService {
         String role = params.get("role");
         String facultyIdStr = params.get("facultyId");
         String majorIdStr = params.get("majorId");
+
+
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username không được để trống");
         }
-
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Password không được để trống");
+        if (this.repo.getUserByUsername(username) != null) {
+            throw new IllegalArgumentException("Username đã tồn tại");
         }
-        if (password.length() < 6) {
-            throw new IllegalArgumentException("Password không được có độ dài < 6");
+        if (password == null || password.trim().length() < 6) {
+            throw new IllegalArgumentException("Password không hợp lệ (>= 6 ký tự)");
         }
         if (email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Email không được để trống");
         }
-
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new IllegalArgumentException("First name không được để trống");
         }
-
         if (lastName == null || lastName.trim().isEmpty()) {
             throw new IllegalArgumentException("Last name không được để trống");
         }
-
         if (phone == null || phone.trim().isEmpty()) {
             throw new IllegalArgumentException("Phone không được để trống");
         }
         if (role == null || role.trim().isEmpty()) {
             throw new IllegalArgumentException("Role không được để trống");
         }
-        if (this.repo.getUserByUsername(username) != null) {
-            throw new IllegalArgumentException("Username đã tồn tại");
-        }
+
+        
         List<String> validRoles = List.of("ROLE_ADMIN", "ROLE_MINISTRY", "ROLE_LECTURER", "ROLE_STUDENT");
         if (!validRoles.contains(role.toUpperCase())) {
-            throw new IllegalArgumentException("Role phải là ROLE_MINISTRY, ROLE_LECTURER, hoặc ROLE_STUDENT.");
+            throw new IllegalArgumentException("Role không hợp lệ");
         }
+
+        
         if (facultyIdStr == null || facultyIdStr.trim().isEmpty()) {
             throw new IllegalArgumentException("FacultyId không được trống");
         }
-
         int facultyId = Integer.parseInt(facultyIdStr.trim());
         Faculty f = this.falRepo.getById(facultyId);
         if (f == null) {
             throw new IllegalArgumentException("Faculty không tồn tại");
         }
-        if (!avatar.isEmpty()) {
+
+        // --- Nếu là STUDENT thì validate major trước khi tạo user ---
+        Major selectedMajor = null;
+        if (role.equalsIgnoreCase("ROLE_STUDENT")) {
+            if (majorIdStr == null || majorIdStr.trim().isEmpty()) {
+                throw new IllegalArgumentException("MajorId không được để trống");
+            }
+            int majorId = Integer.parseInt(majorIdStr.trim());
+            selectedMajor = this.majorRepo.getById(majorId);
+            if (selectedMajor == null) {
+                throw new IllegalArgumentException("Major không tồn tại");
+            }
+        }
+
+        // --- Upload avatar ---
+        if (avatar != null && !avatar.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
                 u.setAvatar(res.get("secure_url").toString());
             } catch (IOException ex) {
                 Logger.getLogger(UsersServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException("Lỗi khi tải ảnh đại diện");
             }
         }
+
+        // --- Set user fields ---
         u.setFirstName(firstName.trim());
         u.setLastName(lastName.trim());
         u.setUsername(username.trim());
@@ -143,22 +161,13 @@ public class UsersServiceImpl implements UsersService {
         u.setFacultyId(f);
 
         Users savedUser = this.repo.addOrUpdate(u);
-        if (role.equals("ROLE_STUDENT")) {
-            if (majorIdStr == null || majorIdStr.trim().isEmpty()) {
-                throw new IllegalArgumentException("MajorId không được để trống");
-            }
-            int majorId = Integer.parseInt(majorIdStr.trim());
-            Major selectedMajor = this.majorRepo.getById(majorId);
-            if (selectedMajor == null) {
-                throw new IllegalArgumentException("Major không tồn tại");
-            }
 
+        // --- Create Student nếu là ROLE_STUDENT ---
+        if (role.equalsIgnoreCase("ROLE_STUDENT")) {
             Student s = new Student();
             s.setUserId(savedUser);
-//            s.setMajor(selectedMajor.getName());  // giữ nguyên cho hiển thị
-            s.setMajorSet(Set.of(selectedMajor)); // chính là student_major
+            s.setMajorSet(Set.of(selectedMajor));
             this.studentRepo.insertStudent(s);
-
         }
 
         return savedUser;
@@ -186,36 +195,49 @@ public class UsersServiceImpl implements UsersService {
             throw new IllegalArgumentException("Không tìm thấy user có id = " + id);
         }
         if (params.containsKey("firstName")) {
-            u.setFirstName(params.get("firstName").trim());
+            String fn = params.get("firstName");
+            u.setFirstName(fn != null ? fn.trim() : null);
         }
+
         if (params.containsKey("lastName")) {
-            u.setLastName(params.get("lastName").trim());
+            String ln = params.get("lastName");
+            u.setLastName(ln != null ? ln.trim() : null);
         }
 
         if (params.containsKey("password")) {
-            String password = params.get("password").trim();
-            if (password.length() < 6) {
+            String password = params.get("password");
+            if (password == null || password.trim().length() < 6) {
                 throw new IllegalArgumentException("Password không được có độ dài < 6");
             }
-            u.setPassword(password);
+            u.setPassword(this.passwordEncoder.encode(password.trim()));
         }
 
         if (params.containsKey("phone")) {
-            u.setPhone(params.get("phone").trim());
+            String phone = params.get("phone");
+            u.setPhone(phone != null ? phone.trim() : null);
         }
+
         if (params.containsKey("email")) {
-            u.setEmail(params.get("email").trim());
+            String email = params.get("email");
+            u.setEmail(email != null ? email.trim() : null);
         }
-        String facultyIdStr = params.get("facultyId");
-        if (facultyIdStr == null || facultyIdStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("FacultyId không được trống");
+
+        if (params.containsKey("facultyId")) {
+            String facultyIdStr = params.get("facultyId");
+            if (facultyIdStr == null || facultyIdStr.trim().isEmpty()) {
+                throw new IllegalArgumentException("FacultyId không được để trống");
+            }
+            try {
+                int facultyId = Integer.parseInt(facultyIdStr.trim());
+                Faculty f = this.falRepo.getById(facultyId);
+                if (f == null) {
+                    throw new IllegalArgumentException("Faculty không tồn tại");
+                }
+                u.setFacultyId(f);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("FacultyId không hợp lệ");
+            }
         }
-        int facultyId = Integer.parseInt(facultyIdStr.trim());
-        Faculty f = this.falRepo.getById(facultyId);
-        if (f == null) {
-            throw new IllegalArgumentException("Faculty không tồn tại");
-        }
-        u.setFacultyId(f);
         if (avatar != null && !avatar.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
