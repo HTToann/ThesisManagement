@@ -50,17 +50,20 @@ public class ThesisGradeRepositoryImpl implements ThesisGradeRepository {
     }
 
     @Override
-    public List<ThesisGrade> getByLecturerAndBoard(int lecturerId, int boardId) {
+    public List<ThesisGrade> getByLecturerAndBoardAndThesis(int lecturerId, int boardId, int thesisId) {
         Session session = factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<ThesisGrade> cq = cb.createQuery(ThesisGrade.class);
         Root<ThesisGrade> root = cq.from(ThesisGrade.class);
+
         cq.select(root).where(
                 cb.and(
                         cb.equal(root.get("users").get("userId"), lecturerId),
-                        cb.equal(root.get("board").get("boardId"), boardId)
+                        cb.equal(root.get("board").get("boardId"), boardId),
+                        cb.equal(root.get("thesis").get("thesisId"), thesisId)
                 )
         );
+
         return session.createQuery(cq).getResultList();
     }
 

@@ -133,8 +133,8 @@ public class ThesisGradeServiceImpl implements ThesisGradeService {
     }
 
     @Override
-    public List<ThesisGrade> getByLecturerAndBoard(int lecturerId, int boardId) {
-        return repo.getByLecturerAndBoard(lecturerId, boardId);
+    public List<ThesisGrade> getByLecturerAndBoardAndThesis(int lecturerId, int boardId,int thesisId) {
+        return repo.getByLecturerAndBoardAndThesis(lecturerId, boardId,thesisId);
     }
 
     @Override
