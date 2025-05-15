@@ -18,6 +18,6 @@ public interface ThesisGradeRepository {
     List<ThesisGrade> getAll();
     List<ThesisGrade> getByThesisId(int thesisId);
     List<ThesisGrade> getByBoardId(int boardId);
-    List<ThesisGrade> getByLecturerAndBoard(int lecturerId, int boardId);
+    List<ThesisGrade> getByLecturerAndBoardAndThesis(int lecturerId, int boardId,int thesisId);
     ThesisGrade getByCompositeKey(int boardId, int thesisId, int lecturerId, int criteriaId);
 }

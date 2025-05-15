@@ -52,8 +52,9 @@ public class ApiThesisGradeController {
     }
 
     // 📌 GET theo thesis_id
-    @GetMapping(params = "thesis_id")
-    public ResponseEntity<?> getByThesisId(@RequestParam("thesis_id") int thesisId) {
+    //(params = "thesis_id")
+    @GetMapping("/by-t")
+    public ResponseEntity<?> getByThesisId(@RequestParam("thesisId") int thesisId) {
         if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_LECTURER", "ROLE_MINISTRY")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
@@ -70,21 +71,28 @@ public class ApiThesisGradeController {
     }
 
     // 📌 GET theo lecturer_id + board_id
-    @GetMapping(params = {"lecturer_id", "board_id"})
-    public ResponseEntity<?> getByLecturerAndBoard(@RequestParam("lecturer_id") int lecturerId,
-                                                   @RequestParam("board_id") int boardId) {
+//    (params = {"lecturer_id", "board_id"})
+    @GetMapping("/by-lbt")
+    public ResponseEntity<?> getByLecturerAndBoard(
+            @RequestParam("lecturerId") int lecturerId,
+            @RequestParam("boardId") int boardId,
+            @RequestParam("thesisId") int thesisId) {
+
         if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_LECTURER")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền"));
         }
+
         try {
-            List<ThesisGrade> thesis = this.thesisGradeService.getByLecturerAndBoard(lecturerId, boardId);
-            if (thesis == null) {
+            List<ThesisGrade> thesisGrades = this.thesisGradeService.getByLecturerAndBoardAndThesis(lecturerId, boardId, thesisId);
+            if (thesisGrades.isEmpty()) {
                 return ResponseEntity.notFound().build();
             } else {
-                return ResponseEntity.ok(thesis);
+                return ResponseEntity.ok(thesisGrades);
             }
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Đã xảy ra lỗi"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi"));
         }
     }
 
