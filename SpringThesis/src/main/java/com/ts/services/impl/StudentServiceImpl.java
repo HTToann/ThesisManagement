@@ -131,6 +131,11 @@ public class StudentServiceImpl implements StudentService {
         return this.repo.getStudentByUsername(kw);
     }
 
+    @Override
+    public List<Student> getStudentsByThesisId(int thesisId) {
+        return this.repo.getByThesisId(thesisId);
+    }
+
    
 
 }

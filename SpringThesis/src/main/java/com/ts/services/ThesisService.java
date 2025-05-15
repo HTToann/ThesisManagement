@@ -5,6 +5,7 @@
 package com.ts.services;
 
 import com.ts.pojo.Thesis;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public interface ThesisService {
     List<Thesis> getThesisByName(String kw);
     void deleteThesisById(int thesisId);
     List<Thesis> getAllThesis();
-    Thesis addThesis(Map<String,String> payload);
+    Thesis addThesis(Map<String,String> payload,Principal principal);
     Thesis updateThesis(int id,Map<String,String> payload);
     Thesis updateBrowsingThesis(int id,Map<String,String> payload);
 }

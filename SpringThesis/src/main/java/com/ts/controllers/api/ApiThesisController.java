@@ -4,6 +4,7 @@ import com.ts.pojo.Thesis;
 import com.ts.services.ThesisService;
 import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,12 @@ public class ApiThesisController {
     }
 
     @PostMapping("/secure/thesis")
-    public ResponseEntity<?> createThesis(@RequestBody Map<String, String> payload) {
-        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
-        }
+    public ResponseEntity<?> createThesis(@RequestBody Map<String, String> payload,Principal principal) {
+//        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
+//        }
         try {
-            return new ResponseEntity<>(thesisService.addThesis(payload), HttpStatus.CREATED);
+            return new ResponseEntity<>(thesisService.addThesis(payload,principal), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception ex) {

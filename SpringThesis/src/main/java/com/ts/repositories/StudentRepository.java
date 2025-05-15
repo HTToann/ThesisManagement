@@ -17,7 +17,7 @@ public interface StudentRepository {
     List<Student> getAll();
     Student getById(int id);
     public Student updateStudent(Student s);
-    Student getByThesisId(int thesisId);
+    List<Student> getByThesisId(int thesisId);
     Student getStudentByUserId(int userId);
     List<Student> getStudentByUsername(String kw);
     void deleleStudent(int userId);

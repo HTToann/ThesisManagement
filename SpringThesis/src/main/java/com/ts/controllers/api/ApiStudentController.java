@@ -34,6 +34,21 @@ public class ApiStudentController {
         }
     }
 
+    @GetMapping("/student-thesis/{id}")
+    public ResponseEntity<?> getStudentByThesis(@PathVariable("id") int id) {
+        try {
+            List<Student> students = service.getStudentsByThesisId(id);
+            if (students.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Không tìm thấy sinh viên cho đề tài có ID = " + id));
+            }
+            return ResponseEntity.ok(students);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi: " + e.getMessage()));
+        }
+    }
+
     @GetMapping("/search-student")
     public ResponseEntity<?> getStudentByName(@RequestParam("keyword") String keyword) {
         try {

@@ -25,33 +25,33 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BoardServiceImpl implements BoardService {
-    
+
     @Autowired
     private BoardRepository boardRepo;
-    
+
     @Autowired
     private StudentRepository studentRepo;
-    
+
     @Autowired
     private ThesisRepository thesisRepo;
-    
+
     @Autowired
     private ThesisGradeRepository thesisGradeRepo;
-    
+
     @Autowired
     private EmailService emailService;
-    
+
     @Override
     public List<Board> getAllBoard() {
         return boardRepo.getAllBoard();
     }
-    
+
     @Override
     public Board addBoard(Board board) {
         return boardRepo.addBoard(board);
     }
 
-    private void sendGmailToStudent(Student student,Thesis t) {
+    private void sendGmailToStudent(Student student, Thesis t) {
         String email = student.getUserId().getEmail();
 
         // 📊 Tính điểm trung bình từ thesis_grade
@@ -71,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
                     """, student.getUserId().getFirstName(), student.getUserId().getLastName(),
                 t.getTitle(), avg
         );
-        
+
         emailService.sendEmail(email, subject, content);
     }
 
@@ -90,13 +90,14 @@ public class BoardServiceImpl implements BoardService {
 //                t.setIsLocked(Boolean.TRUE);
 //                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
                 // 🔍 Tìm student thuộc thesis này
-                Student student = studentRepo.getByThesisId(t.getThesisId());
-                if (student != null && student.getUserId() != null) {
-                    sendGmailToStudent(student,t);
+                List<Student> students = studentRepo.getByThesisId(t.getThesisId());
+                for (Student student : students) {
+                    if (student != null && student.getUserId() != null) {
+                        sendGmailToStudent(student, t);
+                    }
                 }
             }
-        }
-        else if (isLocked != null && isLocked.trim().equalsIgnoreCase("false")) {
+        } else if (isLocked != null && isLocked.trim().equalsIgnoreCase("false")) {
             b.setIsLocked(Boolean.FALSE);
             // 🔒 Khóa tất cả các đề tài thuộc hội đồng này
 //            List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);
@@ -107,10 +108,10 @@ public class BoardServiceImpl implements BoardService {
         }
         return this.boardRepo.updateBoard(b);
     }
-    
+
     @Override
     public Board getBoardById(int boardId) {
         return boardRepo.getBoardById(boardId);
     }
-    
+
 }

@@ -71,7 +71,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public Student getByThesisId(int thesisId) {
+    public List<Student> getByThesisId(int thesisId) {
         Session session = this.factory.getObject().getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Student> cq = cb.createQuery(Student.class);
@@ -79,8 +79,7 @@ public class StudentRepositoryImpl implements StudentRepository {
 
         cq.select(root).where(cb.equal(root.get("thesisId").get("thesisId"), thesisId));
 
-        return session.createQuery(cq).uniqueResult();
-
+        return session.createQuery(cq).getResultList();
     }
 
     @Override
