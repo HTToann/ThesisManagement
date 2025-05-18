@@ -83,7 +83,7 @@ public class ThesisServiceImpl implements ThesisService {
         int year;
         try {
             year = Integer.parseInt(yearStr.trim());
-            int currentYear = Year.now().getValue(); 
+            int currentYear = Year.now().getValue();
             if (year <= 0 || year > currentYear) {
                 throw new IllegalArgumentException("Năm không hợp lệ ");
             }
@@ -110,6 +110,9 @@ public class ThesisServiceImpl implements ThesisService {
                     board = boardRepo.getBoardById(boardId);
                     if (board == null) {
                         throw new IllegalArgumentException("Không tìm thấy hội đồng");
+                    }
+                    if (board.getIsLocked()) {
+                        throw new IllegalArgumentException("Hội đồng đã khóa, không thể gán");
                     }
                     if (thesisRepo.getThesesByBoardId(boardId).size() >= 5) {
                         throw new IllegalArgumentException("Hội đồng này đã có tối đa 5 đề tài");
@@ -219,7 +222,9 @@ public class ThesisServiceImpl implements ThesisService {
                 if (board == null) {
                     throw new IllegalArgumentException("Không tìm thấy hội đồng");
                 }
-
+                if (board.getIsLocked()) {
+                    throw new IllegalArgumentException("Hội đồng đã khóa, không thể gán");
+                }
                 // Chỉ kiểm tra nếu gán sang hội đồng MỚI hoặc đề tài chưa có hội đồng
                 if (t.getBoardId() == null || t.getBoardId().getBoardId() != boardId) {
                     List<Thesis> existing = thesisRepo.getThesesByBoardId(boardId);
