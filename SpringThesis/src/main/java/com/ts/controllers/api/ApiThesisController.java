@@ -1,6 +1,8 @@
 package com.ts.controllers.api;
 
 import com.ts.pojo.Thesis;
+import com.ts.pojo.ThesisMemberInfoDTO;
+import com.ts.services.ThesisMemberService;
 import com.ts.services.ThesisService;
 import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,12 +21,26 @@ public class ApiThesisController {
 
     @Autowired
     private ThesisService thesisService;
-
+    @Autowired 
+    private ThesisMemberService thesisMemberSerivce;
+    
     @GetMapping("/thesis")
     public ResponseEntity<?> getAllTheses() {
         return ResponseEntity.ok(thesisService.getAllThesis());
     }
-
+    @GetMapping("/thesis-members/{id}")
+    public ResponseEntity<?> getThesisMemberById(@PathVariable("id") int id) {
+        try {
+            List<ThesisMemberInfoDTO> t = thesisMemberSerivce.getThesisMembersByThesisId(id);
+            if (t == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy đề tài.");
+            }
+            return ResponseEntity.ok(t);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi."));
+        }
+    }
     @GetMapping("/search-thesis")
     public ResponseEntity<?> getThesisByName(@RequestParam("keyword") String keyword) {
         try {
