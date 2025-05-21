@@ -42,6 +42,7 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\ThesisGr
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\ThesisGradePK.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\ThesisLecturer.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\ThesisLecturerPK.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\ThesisMemberInfoDTO.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\Users.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\BoardMemberRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\BoardRepository.java
@@ -56,6 +57,7 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\StudentRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\ThesisGradeRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\ThesisLecturerRepositoryImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\ThesisMemberRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\ThesisRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\impl\UsersRepositoryImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\MajorRepository.java
@@ -63,6 +65,7 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\StudentRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\ThesisGradeRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\ThesisLecturerRepository.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\ThesisMemberRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\ThesisRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\repositories\UsersRepository.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\BoardMemberService.java
@@ -81,6 +84,7 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\StudentServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisGradeServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisLecturerServiceImpl.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisMemberServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\ThesisServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\impl\UsersServiceImpl.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\MajorService.java
@@ -89,6 +93,7 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\Stat
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\StudentService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\ThesisGradeService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\ThesisLecturerService.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\ThesisMemberService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\ThesisService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\services\UsersService.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\springthesis\JakartaRestConfiguration.java
