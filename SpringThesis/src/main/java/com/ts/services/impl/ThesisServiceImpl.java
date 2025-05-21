@@ -264,4 +264,9 @@ public class ThesisServiceImpl implements ThesisService {
         }
         return this.thesisRepo.addOrUpdate(t);
     }
+
+    @Override
+    public List<Thesis> getThesesByUserId(int userId) {
+        return this.thesisRepo.getThesesByUserId(userId);
+    }
 }

@@ -18,7 +18,9 @@ public interface ThesisService {
     List<Thesis> getThesisByName(String kw);
     void deleteThesisById(int thesisId);
     List<Thesis> getAllThesis();
+    List<Thesis> getThesesByUserId(int userId);
     Thesis addThesis(Map<String,String> payload,Principal principal);
     Thesis updateThesis(int id,Map<String,String> payload);
     Thesis updateBrowsingThesis(int id,Map<String,String> payload);
+    
 }

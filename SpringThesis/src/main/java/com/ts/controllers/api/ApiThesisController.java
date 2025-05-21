@@ -21,13 +21,30 @@ public class ApiThesisController {
 
     @Autowired
     private ThesisService thesisService;
-    @Autowired 
+    @Autowired
     private ThesisMemberService thesisMemberSerivce;
-    
+
     @GetMapping("/thesis")
     public ResponseEntity<?> getAllTheses() {
         return ResponseEntity.ok(thesisService.getAllThesis());
     }
+
+    @GetMapping("/theses/{userId}")
+    public ResponseEntity<?> getThesesForUser(@PathVariable("userId") int userId) {
+        try {
+            List<Thesis> result = thesisService.getThesesByUserId(userId);
+            if (result == null || result.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Không tìm thấy khóa luận cho userId: " + userId));
+            }
+
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã xảy ra lỗi."));
+        }
+    }
+
     @GetMapping("/thesis-members/{id}")
     public ResponseEntity<?> getThesisMemberById(@PathVariable("id") int id) {
         try {
@@ -41,6 +58,7 @@ public class ApiThesisController {
                     .body(Map.of("error", "Đã xảy ra lỗi."));
         }
     }
+
     @GetMapping("/search-thesis")
     public ResponseEntity<?> getThesisByName(@RequestParam("keyword") String keyword) {
         try {
@@ -70,12 +88,12 @@ public class ApiThesisController {
     }
 
     @PostMapping("/secure/thesis")
-    public ResponseEntity<?> createThesis(@RequestBody Map<String, String> payload,Principal principal) {
+    public ResponseEntity<?> createThesis(@RequestBody Map<String, String> payload, Principal principal) {
 //        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
 //        }
         try {
-            return new ResponseEntity<>(thesisService.addThesis(payload,principal), HttpStatus.CREATED);
+            return new ResponseEntity<>(thesisService.addThesis(payload, principal), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception ex) {
