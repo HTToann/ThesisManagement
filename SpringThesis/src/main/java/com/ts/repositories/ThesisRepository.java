@@ -17,5 +17,6 @@ public interface ThesisRepository {
     void deleteThesisById(int thesisId);
     List<Thesis> getAllThesis();
     List<Thesis> getThesesByBoardId(int boardId);
+    List<Thesis> getThesesByUserId(int userId);
     Thesis addOrUpdate(Thesis thesis);
 }

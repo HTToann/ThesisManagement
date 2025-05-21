@@ -4,14 +4,19 @@
  */
 package com.ts.repositories.impl;
 
+import com.ts.pojo.Student;
 import com.ts.pojo.Thesis;
 import com.ts.pojo.ThesisLecturer;
 import com.ts.pojo.Users;
 import com.ts.repositories.ThesisRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,5 +93,40 @@ public class ThesisRepositoryImpl implements ThesisRepository {
         cq.select(root).where(cb.like(cb.lower(root.get("title")), "%" + kw.toLowerCase() + "%"));
 
         return session.createQuery(cq).getResultList();
+    }
+
+    @Override
+    public List<Thesis> getThesesByUserId(int userId) {
+        Session session = this.factory.getObject().getCurrentSession();
+
+        // --- Query 1: user là giảng viên ---
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Thesis> lecturerQuery = cb.createQuery(Thesis.class);
+        Root<ThesisLecturer> lecturerRoot = lecturerQuery.from(ThesisLecturer.class);
+        Join<ThesisLecturer, Thesis> thesisJoinLecturer = lecturerRoot.join("thesis");
+        Join<ThesisLecturer, Users> userJoinLecturer = lecturerRoot.join("users");
+
+        lecturerQuery.select(thesisJoinLecturer)
+                .where(cb.equal(userJoinLecturer.get("userId"), userId));
+
+        List<Thesis> lecturerResults = session.createQuery(lecturerQuery).getResultList();
+
+        // --- Query 2: user là sinh viên ---
+        CriteriaQuery<Thesis> studentQuery = cb.createQuery(Thesis.class);
+        Root<Student> studentRoot = studentQuery.from(Student.class);
+        Join<Student, Users> userJoinStudent = studentRoot.join("userId");
+        Join<Student, Thesis> thesisJoinStudent = studentRoot.join("thesisId");
+
+        studentQuery.select(thesisJoinStudent)
+                .where(cb.equal(userJoinStudent.get("userId"), userId));
+
+        List<Thesis> studentResults = session.createQuery(studentQuery).getResultList();
+
+        // --- Gộp & loại trùng ---
+        Set<Thesis> combined = new HashSet<>();
+        combined.addAll(lecturerResults);
+        combined.addAll(studentResults);
+
+        return new ArrayList<>(combined);
     }
 }
