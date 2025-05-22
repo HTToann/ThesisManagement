@@ -4,6 +4,7 @@
  */
 package com.ts.services.impl;
 
+import com.ts.enumRole.BoardRole;
 import com.ts.pojo.Board;
 import com.ts.pojo.BoardMember;
 import com.ts.pojo.BoardMemberPK;
@@ -19,6 +20,7 @@ import com.ts.services.BoardMemberService;
 import com.ts.services.EmailService;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,9 +72,13 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         int lecturerId = member.getUsers().getUserId();
         String role = member.getRoleInBoard();
         List<BoardMember> existingMembers = repo.getBoardMembersByBoardId(boardId);
-        List<String> validRoles = List.of("ROLE_CHAIRMAIN", "ROLE_SECRETARY", "ROLE_COUNTER", "ROLE_MEMBERS");
-
-        if (!validRoles.contains(role)) {
+        Set<String> boardRoles = Set.of(
+                BoardRole.ROLE_CHAIRMAIN.name(),
+                BoardRole.ROLE_SECRETARY.name(),
+                BoardRole.ROLE_COUNTER.name(),
+                BoardRole.ROLE_MEMBERS.name()
+        );
+        if (!boardRoles.contains(role)) {
             throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ được chọn: ROLE_CHAIRMAIN, ROLE_SECRETARY, ROLE_COUNTER, ROLE_MEMBERS.");
         }
         if (existingMembers.size() >= 5) {
@@ -159,9 +165,14 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         if (newRole == null || newRole.trim().isEmpty()) {
             throw new IllegalArgumentException("Vai trò không được để trống.");
         }
-        List<String> validRoles = List.of("ROLE_CHAIRMAIN", "ROLE_SECRETARY", "ROLE_COUNTER", "ROLE_MEMBERS");
 
-        if (!validRoles.contains(newRole)) {
+        Set<String> boardRoles = Set.of(
+                BoardRole.ROLE_CHAIRMAIN.name(),
+                BoardRole.ROLE_SECRETARY.name(),
+                BoardRole.ROLE_COUNTER.name(),
+                BoardRole.ROLE_MEMBERS.name()
+        );
+        if (!boardRoles.contains(newRole)) {
             throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ được chọn: ROLE_CHAIRMAIN, ROLE_SECRETARY, ROLE_COUNTER, ROLE_MEMBERS.");
         }
         repo.updateBoardMemberRole(boardId, lecturerId, newRole);

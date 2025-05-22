@@ -4,6 +4,7 @@
  */
 package com.ts.services.impl;
 
+import com.ts.enumRole.ThesisLecturerRole;
 import com.ts.pojo.Thesis;
 import com.ts.pojo.ThesisLecturer;
 import com.ts.pojo.ThesisLecturerPK;
@@ -14,6 +15,7 @@ import com.ts.repositories.UsersRepository;
 import com.ts.services.ThesisLecturerService;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,13 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
             int lecturerId = Integer.parseInt(payload.get("lecturerId").trim());
             String role = payload.get("lectureRole");
 
-            if (role == null || (!role.equals("ROLE_MAIN_ADVISOR") && !role.equals("ROLE_CO_ADVISOR"))) {
+            Set<String> thesisLecturerRoles = Set.of(
+                    ThesisLecturerRole.ROLE_MAIN_ADVISOR.name(),
+                    ThesisLecturerRole.ROLE_CO_ADVISOR.name()
+            );
+            if (!thesisLecturerRoles.contains(role)) {
                 throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'ROLE_MAIN_ADVISOR' hoặc 'ROLE_CO_ADVISOR'.");
             }
-
             // Lấy đối tượng liên quan
             Thesis thesis = thesisRepo.getThesisById(thesisId);
             Users lecturer = userRepo.getUserById(lecturerId);
@@ -110,8 +115,15 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
             int newLecturerId = Integer.parseInt(payload.get("newLecturerId").trim());
             String newRole = payload.get("lectureRole");
 
+            Set<String> thesisLecturerRoles = Set.of(
+                    ThesisLecturerRole.ROLE_MAIN_ADVISOR.name(),
+                    ThesisLecturerRole.ROLE_CO_ADVISOR.name()
+            );
             if (newRole == null || newRole.trim().isEmpty()) {
                 throw new IllegalArgumentException("Vai trò không được để trống.");
+            }
+            if (!thesisLecturerRoles.contains(newRole)) {
+                throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'ROLE_MAIN_ADVISOR' hoặc 'ROLE_CO_ADVISOR'.");
             }
 
             // Tìm bản ghi hiện tại
