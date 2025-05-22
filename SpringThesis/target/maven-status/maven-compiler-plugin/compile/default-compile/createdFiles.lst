@@ -8,9 +8,11 @@ com\ts\repositories\BoardMemberRepository.class
 com\ts\repositories\impl\MajorRepositoryImpl.class
 com\ts\services\impl\FacultyServiceImpl.class
 com\ts\services\UsersService.class
+com\ts\enumRole\BoardRole.class
 com\ts\services\impl\UsersServiceImpl.class
 com\ts\pojo\Board.class
 com\ts\repositories\impl\CriteriaRepositoryImpl.class
+com\ts\pojo\BoardRequestDTO$MemberRequest.class
 com\ts\services\EmailService.class
 com\ts\services\ThesisGradeService.class
 com\ts\controllers\StudentController.class
@@ -18,6 +20,7 @@ com\ts\services\StatsService.class
 com\ts\services\ThesisMemberService.class
 com\ts\controllers\IndexController.class
 com\ts\controllers\ThesisGradeController.class
+com\ts\pojo\BoardRequestDTO.class
 com\ts\services\impl\ThesisLecturerServiceImpl.class
 com\ts\repositories\impl\ThesisMemberRepositoryImpl.class
 com\ts\services\impl\MajorServiceImpl.class

@@ -59,7 +59,12 @@ public class Thesis implements Serializable {
     @Size(max = 50)
     @Column(name = "semester")
     private String semester;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "score")
+    private Double score;
 
+
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -225,6 +230,14 @@ public class Thesis implements Serializable {
 
     public void setSemester(String semester) {
         this.semester = semester;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
     
 }

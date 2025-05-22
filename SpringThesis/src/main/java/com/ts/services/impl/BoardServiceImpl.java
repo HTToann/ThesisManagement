@@ -4,18 +4,26 @@
  */
 package com.ts.services.impl;
 
+import com.ts.enumRole.BoardRole;
 import com.ts.pojo.Board;
+import com.ts.pojo.BoardMember;
+import com.ts.pojo.BoardMemberPK;
+import com.ts.pojo.BoardRequestDTO;
 import com.ts.pojo.Student;
 import com.ts.pojo.Thesis;
 import com.ts.pojo.ThesisGrade;
+import com.ts.repositories.BoardMemberRepository;
 import com.ts.repositories.BoardRepository;
 import com.ts.repositories.StudentRepository;
 import com.ts.repositories.ThesisGradeRepository;
 import com.ts.repositories.ThesisRepository;
 import com.ts.services.BoardService;
 import com.ts.services.EmailService;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +45,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private ThesisGradeRepository thesisGradeRepo;
-
+    @Autowired
+    private BoardMemberRepository boardMemberRepo;
     @Autowired
     private EmailService emailService;
 
@@ -90,6 +99,11 @@ public class BoardServiceImpl implements BoardService {
 //                t.setIsLocked(Boolean.TRUE);
 //                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
                 // 🔍 Tìm student thuộc thesis này
+                // Cập nhật điểm cho khóa luận
+                List<ThesisGrade> grades = thesisGradeRepo.getByThesisId(t.getThesisId());
+                double avg = grades.stream().mapToDouble(ThesisGrade::getScore).average().orElse(0.0);
+                t.setScore(avg);
+                this.thesisRepo.addOrUpdate(t);
                 List<Student> students = studentRepo.getByThesisId(t.getThesisId());
                 for (Student student : students) {
                     if (student != null && student.getUserId() != null) {
@@ -114,4 +128,45 @@ public class BoardServiceImpl implements BoardService {
         return boardRepo.getBoardById(boardId);
     }
 
+    @Override
+    public Board createBoardWithMembers(BoardRequestDTO request) {
+        Set<Integer> seenLecturerIds = new HashSet<>();
+        Set<String> seenRoles = new HashSet<>();
+
+        Set<String> uniqueRoles = Set.of(
+                BoardRole.ROLE_CHAIRMAIN.name(),
+                BoardRole.ROLE_SECRETARY.name(),
+                BoardRole.ROLE_COUNTER.name()
+        );
+
+        if (request.getMembers().size() < 3) {
+            throw new IllegalArgumentException("Hội đồng phải có ít nhất 3 thành viên.");
+        }
+
+        for (BoardRequestDTO.MemberRequest m : request.getMembers()) {
+            if (!seenLecturerIds.add(m.getLecturerId())) {
+                throw new IllegalArgumentException("Giảng viên ID " + m.getLecturerId() + " bị trùng trong danh sách.");
+            }
+
+            if (uniqueRoles.contains(m.getRole())) {
+                if (!seenRoles.add(m.getRole())) {
+                    throw new IllegalArgumentException("Vai trò '" + m.getRole() + "' đã được gán cho người khác.");
+                }
+            }
+        }
+
+        // Tạo hội đồng
+        Board savedBoard = boardRepo.addBoard(new Board());
+
+        // Gán thành viên
+        for (BoardRequestDTO.MemberRequest m : request.getMembers()) {
+            BoardMemberPK pk = new BoardMemberPK(savedBoard.getBoardId(), m.getLecturerId());
+            BoardMember bm = new BoardMember(pk, m.getRole());
+            bm.setBoard(savedBoard);
+            boardMemberRepo.addBoardMember(bm);
+        }
+
+        return savedBoard;
+
+    }
 }

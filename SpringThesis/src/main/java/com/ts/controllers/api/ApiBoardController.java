@@ -1,6 +1,7 @@
     package com.ts.controllers.api;
 
 import com.ts.pojo.Board;
+import com.ts.pojo.BoardRequestDTO;
 import com.ts.services.BoardService;
 import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +40,22 @@ public class ApiBoardController {
         }
         try {
             Board board = boardService.addBoard(new Board());
+            return new ResponseEntity<>(board, HttpStatus.CREATED);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Đã có lỗi xảy ra"));
+        }
+    }
+    @PostMapping("/secure/add/board-members")
+    public ResponseEntity<?> createBoardAndMembers(@RequestBody BoardRequestDTO request) {
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Bạn không có quyền tạo hội đồng."));
+        }
+        try {
+            Board board = boardService.createBoardWithMembers(request);
             return new ResponseEntity<>(board, HttpStatus.CREATED);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));

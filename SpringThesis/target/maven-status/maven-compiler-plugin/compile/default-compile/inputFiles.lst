@@ -29,10 +29,12 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\T
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ThesisGradeController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ThesisLecturerController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\UsersController.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\enumRole\BoardRole.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\filters\JwtFilter.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\Board.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\BoardMember.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\BoardMemberPK.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\BoardRequestDTO.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\Criteria.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\Faculty.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\Major.java
