@@ -5,6 +5,7 @@
 package com.ts.services;
 
 import com.ts.pojo.Board;
+import com.ts.pojo.BoardRequestDTO;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 public interface BoardService {
     List<Board> getAllBoard();
     Board addBoard(Board board);
+    Board createBoardWithMembers(BoardRequestDTO request);
     Board updateBoard(int boardId,Map<String, String> params);
     Board getBoardById(int boardId);
 }
