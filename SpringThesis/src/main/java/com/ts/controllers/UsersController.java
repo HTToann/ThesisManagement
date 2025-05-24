@@ -39,7 +39,7 @@ public class UsersController {
         }
         model.addAttribute("users", users);
         model.addAttribute("faculty",this.facService.getAll());
-//        model.addAttribute("majors",maService.getAllMajors());
+        model.addAttribute("majors",maService.getAllMajors());
         return "users";
     }
 
