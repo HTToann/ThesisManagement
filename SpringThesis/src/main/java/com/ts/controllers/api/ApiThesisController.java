@@ -104,9 +104,9 @@ public class ApiThesisController {
 
     @PutMapping("/secure/thesis/{id}")
     public ResponseEntity<?> updateThesis(@PathVariable("id") int id, @RequestBody Map<String, String> payload) {
-        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
-        }
+//        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
+//        }
         try {
             return ResponseEntity.ok(thesisService.updateThesis(id, payload));
         } catch (IllegalArgumentException ex) {

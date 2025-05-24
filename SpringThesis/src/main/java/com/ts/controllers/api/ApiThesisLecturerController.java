@@ -52,9 +52,9 @@ public class ApiThesisLecturerController {
     }
     @GetMapping("/{thesisId}")
     public ResponseEntity<?> getLecturers(@PathVariable("thesisId") int thesisId) {
-        if (AuthUtils.hasRole("ROLE_STUDENT")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
-        }
+//        if (AuthUtils.hasRole("ROLE_STUDENT")) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
+//        }
         try {
             List<ThesisLecturer> thesisLecturer = this.thesisLecturerService.getByThesisId(thesisId);
             if (thesisLecturer == null) {

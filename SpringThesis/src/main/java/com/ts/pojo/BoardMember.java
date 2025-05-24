@@ -46,7 +46,7 @@ public class BoardMember implements Serializable {
     @ManyToOne(optional = false)
     private Board board;
     @JoinColumn(name = "lecturer_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(optional = false)
     private Users users;
 

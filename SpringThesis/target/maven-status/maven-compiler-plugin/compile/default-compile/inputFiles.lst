@@ -30,6 +30,7 @@ D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\T
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\ThesisLecturerController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\controllers\UsersController.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\enumRole\BoardRole.java
+D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\enumRole\ThesisLecturerRole.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\filters\JwtFilter.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\Board.java
 D:\ThesisSystem\ThesisManagement\SpringThesis\src\main\java\com\ts\pojo\BoardMember.java

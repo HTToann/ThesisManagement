@@ -29,6 +29,7 @@ com\ts\pojo\ThesisMemberInfoDTO.class
 com\ts\controllers\api\ApiBoardMemberController.class
 com\ts\configs\SecurityWebApplicationInitializer.class
 com\ts\configs\MailSenderConfig.class
+com\ts\enumRole\ThesisLecturerRole.class
 com\ts\services\impl\PdfExportServiceImpl.class
 com\ts\repositories\impl\ThesisGradeRepositoryImpl.class
 com\ts\repositories\StatsRepository.class
