@@ -57,10 +57,8 @@ public class ApiMajorController {
 
     @PostMapping("/secure/majors")
     public ResponseEntity<?> createMajor(@RequestBody Map<String, String> payload) {
-        if (!AuthUtils.hasRole("ROLE_MINISTRY")) {
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Bạn không có quyền"));
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
 
         try {
