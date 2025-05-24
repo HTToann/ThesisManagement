@@ -53,8 +53,6 @@ public class ApiMajorController {
         }
     }
 
-
-
     @PostMapping("/secure/majors")
     public ResponseEntity<?> createMajor(@RequestBody Map<String, String> payload) {
         if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
@@ -74,10 +72,8 @@ public class ApiMajorController {
 
     @PutMapping("/secure/majors/{id}")
     public ResponseEntity<?> updateMajor(@PathVariable("id") int id, @RequestBody Map<String, String> payload) {
-        if (!AuthUtils.hasRole("ROLE_MINISTRY")) {
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Bạn không có quyền"));
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
 
         try {
@@ -97,10 +93,8 @@ public class ApiMajorController {
 
     @DeleteMapping("/secure/majors/{id}")
     public ResponseEntity<?> deleteMajor(@PathVariable("id") int id) {
-        if (!AuthUtils.hasRole("ROLE_MINISTRY")) {
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "Bạn không có quyền"));
+        if (!AuthUtils.hasAnyRole("ROLE_ADMIN", "ROLE_MINISTRY")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Bạn không có quyền"));
         }
 
         try {

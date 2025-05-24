@@ -13,7 +13,7 @@ document.getElementById('MajorForm').addEventListener('submit', async function (
     const majorId = form.majorId.value;
     const payload = {
         name: form.name.value,
-        faculty_id: form.facultyId.value
+        facultyId: form.facultyId.value
     };
 
     let url = '/SpringThesis/api/secure/majors';
