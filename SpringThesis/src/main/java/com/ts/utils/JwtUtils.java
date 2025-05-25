@@ -25,7 +25,7 @@ public class JwtUtils {
 
     public static String generateToken(String username, String role) throws Exception {
         JWSSigner signer = new MACSigner(SECRET);
-
+        //Tạo JWT chứa thông tin:
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .claim("role", role)  // ✅ Thêm role ở đây

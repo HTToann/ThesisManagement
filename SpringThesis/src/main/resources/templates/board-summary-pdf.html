@@ -1,102 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <style>
-        @font-face {
-            font-family: 'Roboto';
-            src: url('fonts/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
-        }
+    <head>
+        <meta charset="UTF-8"/>
+        <style>
+            @font-face {
+                font-family: 'Roboto';
+                src: url('fonts/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+            }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 40px;
-        }
+            body {
+                font-family: 'Roboto', sans-serif;
+                margin: 40px;
+            }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
 
-        .header h2 {
-            text-transform: uppercase;
-        }
+            .header h2 {
+                text-transform: uppercase;
+            }
 
-        .meta {
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
+            .meta {
+                margin-bottom: 20px;
+                font-size: 14px;
+            }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1em;
-            font-size: 14px;
-        }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1em;
+                font-size: 14px;
+            }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
 
-        th {
-            background-color: #f2f2f2;
-        }
+            th {
+                background-color: #f2f2f2;
+            }
 
-        .signature {
-            margin-top: 50px;
-            width: 100%;
-        }
+            .signature {
+                margin-top: 50px;
+                width: 100%;
+            }
 
-        .signature td {
-            text-align: center;
-            padding-top: 40px;
-        }
+            .signature td {
+                text-align: center;
+                padding-top: 40px;
+            }
 
-        .right {
-            text-align: right;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h2>BÁO CÁO ĐIỂM TRUNG BÌNH HỘI ĐỒNG <span th:text="${boardID}"></span></h2>
-    </div>
+            .right {
+                text-align: right;
+                margin-top: 10px;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h2>BÁO CÁO ĐIỂM TRUNG BÌNH HỘI ĐỒNG <span th:text="${boardID}"></span></h2>
+        </div>
 
-    <div class="meta">
-        <p><b>Năm học:</b> <span th:text="${year}"></span></p>
-        <p><b>Ngày lập báo cáo:</b> <span th:text="${currentDate}"></span></p>
-    </div>
+        <div class="meta">
+            <p><b>Học kỳ: </b> <span th:text ="${semester}"></span> </p>
+            <p><b>Năm học:</b> <span th:text="${year}"></span></p>
+            <p>
+                <b>Tên khóa luận:</b>
+                <span style="display: inline-block; min-width: 300px;" th:text="${title}"></span>
 
-    <table>
-        <thead>
+                <b>Điểm khóa luận:</b>
+                <span th:text="${#numbers.formatDecimal(score, 1, 2)}"></span>
+            </p>
+            <p><b>Ngày lập báo cáo:</b> <span th:text="${currentDate}"></span></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Họ tên giảng viên</th>
+                    <th>Vai trò</th>
+                    <th>Điểm trung bình</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="row : ${summaries}">
+                    <td th:text="${row.lecturerName}"></td>
+                    <td th:text="${row.roleDisplay}"></td>
+                    <td th:text="${#numbers.formatDecimal(row.avgScore, 1, 2)}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="signature">
             <tr>
-                <th>Họ tên giảng viên</th>
-                <th>Vai trò</th>
-                <th>Điểm trung bình</th>
+                <td><b>Người lập báo cáo</b></td>
+                <td><b>Ban lãnh đạo</b></td>
             </tr>
-        </thead>
-        <tbody>
-            <tr th:each="row : ${summaries}">
-                <td th:text="${row.lecturerName}"></td>
-                <td th:text="${row.role}"></td>
-                <td th:text="${#numbers.formatDecimal(row.avgScore, 1, 2)}"></td>
+            <tr>
+                <td>(Ký và ghi rõ họ tên)</td>
+                <td>(Ký và ghi rõ họ tên)</td>
             </tr>
-        </tbody>
-    </table>
-
-    <table class="signature">
-        <tr>
-            <td><b>Người lập báo cáo</b></td>
-            <td><b>Ban lãnh đạo</b></td>
-        </tr>
-        <tr>
-            <td>(Ký và ghi rõ họ tên)</td>
-            <td>(Ký và ghi rõ họ tên)</td>
-        </tr>
-    </table>
-</body>
+        </table>
+    </body>
 </html>

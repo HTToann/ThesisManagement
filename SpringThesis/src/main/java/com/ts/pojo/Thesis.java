@@ -63,8 +63,6 @@ public class Thesis implements Serializable {
     @Column(name = "score")
     private Double score;
 
-
-    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,13 +90,20 @@ public class Thesis implements Serializable {
 
     @PrePersist
     public void prePersist() {
-        if (this.isLocked == null)
+        if (this.isLocked == null) {
             this.isLocked = false;
-        if (this.createdAt == null)
+        }
+        if (this.createdAt == null) {
             this.createdAt = new Date();
-        if(this.year==0)
+        }
+        if (this.year == 0) {
             this.year = LocalDate.now().getYear();  // Trả về 2025
+        }
+        if (this.score == null || this.score == 0) {
+            this.score = 0.0;
+        }
     }
+
     public Thesis() {
     }
 
@@ -119,7 +124,6 @@ public class Thesis implements Serializable {
     public void setThesisId(Integer thesisId) {
         this.thesisId = thesisId;
     }
-
 
     public Date getCreatedAt() {
         return createdAt;
@@ -239,5 +243,5 @@ public class Thesis implements Serializable {
     public void setScore(Double score) {
         this.score = score;
     }
-    
+
 }

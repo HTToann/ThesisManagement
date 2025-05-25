@@ -5,6 +5,8 @@
 package com.ts.services.impl;
 
 import com.ts.enumRole.ThesisLecturerRole;
+import com.ts.pojo.Board;
+import com.ts.pojo.BoardMember;
 import com.ts.pojo.Thesis;
 import com.ts.pojo.ThesisLecturer;
 import com.ts.pojo.ThesisLecturerPK;
@@ -45,6 +47,10 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
                     ThesisLecturerRole.ROLE_MAIN_ADVISOR.name(),
                     ThesisLecturerRole.ROLE_CO_ADVISOR.name()
             );
+            Map<String, String> roleFriendlyNames = Map.of(
+                    ThesisLecturerRole.ROLE_MAIN_ADVISOR.name(), "Giảng viên hướng dẫn chính",
+                    ThesisLecturerRole.ROLE_CO_ADVISOR.name(), "Giảng viên đồng hướng dẫn"
+            );
             if (!thesisLecturerRoles.contains(role)) {
                 throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ chấp nhận 'ROLE_MAIN_ADVISOR' hoặc 'ROLE_CO_ADVISOR'.");
             }
@@ -56,6 +62,14 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
                 throw new IllegalArgumentException("Thesis hoặc giảng viên không tồn tại.");
             }
 
+            Board board = thesis.getBoardId();
+            if (board != null && board.getBoardMemberSet() != null) {
+                for (BoardMember bm : board.getBoardMemberSet()) {
+                    if (bm.getUsers().getUserId().equals(lecturerId)) {
+                        throw new IllegalArgumentException("Giảng viên đã là thành viên hội đồng, không thể phân công làm giảng viên hướng dẫn.");
+                    }
+                }
+            }
             // Lấy danh sách giảng viên đã phân công cho đề tài
             List<ThesisLecturer> lecturers = repo.getByThesisId(thesisId);
 
@@ -68,8 +82,10 @@ public class ThesisLecturerServiceImpl implements ThesisLecturerService {
                     throw new IllegalArgumentException("Giảng viên này đã được phân công cho đề tài.");
                 }
                 if (l.getLectureRole().equalsIgnoreCase(role)) {
-                    throw new IllegalArgumentException("Vai trò '" + role + "' đã được sử dụng cho đề tài này.");
+                    String friendlyName = roleFriendlyNames.getOrDefault(role, role);
+                    throw new IllegalArgumentException("Vai trò '" + friendlyName + "' đã được sử dụng cho đề tài này.");
                 }
+
             }
 
             // Tạo mới đối tượng và persist

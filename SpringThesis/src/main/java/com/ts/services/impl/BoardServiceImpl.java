@@ -19,6 +19,8 @@ import com.ts.repositories.ThesisGradeRepository;
 import com.ts.repositories.ThesisRepository;
 import com.ts.services.BoardService;
 import com.ts.services.EmailService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -101,8 +103,16 @@ public class BoardServiceImpl implements BoardService {
                 // 🔍 Tìm student thuộc thesis này
                 // Cập nhật điểm cho khóa luận
                 List<ThesisGrade> grades = thesisGradeRepo.getByThesisId(t.getThesisId());
-                double avg = grades.stream().mapToDouble(ThesisGrade::getScore).average().orElse(0.0);
-                t.setScore(avg);
+                double avg = grades.stream()
+                        .mapToDouble(ThesisGrade::getScore)
+                        .average()
+                        .orElse(0.0);
+
+                double roundedAvg = BigDecimal.valueOf(avg)
+                        .setScale(2, RoundingMode.HALF_UP)
+                        .doubleValue();
+
+                t.setScore(roundedAvg);
                 this.thesisRepo.addOrUpdate(t);
                 List<Student> students = studentRepo.getByThesisId(t.getThesisId());
                 for (Student student : students) {
@@ -133,10 +143,16 @@ public class BoardServiceImpl implements BoardService {
         Set<Integer> seenLecturerIds = new HashSet<>();
         Set<String> seenRoles = new HashSet<>();
 
-        Set<String> uniqueRoles = Set.of(
+        Set<String> requiredRoles = Set.of(
                 BoardRole.ROLE_CHAIRMAIN.name(),
                 BoardRole.ROLE_SECRETARY.name(),
                 BoardRole.ROLE_COUNTER.name()
+        );
+
+        Map<String, String> roleDisplayNames = Map.of(
+                BoardRole.ROLE_CHAIRMAIN.name(), "Chủ tịch",
+                BoardRole.ROLE_SECRETARY.name(), "Thư ký",
+                BoardRole.ROLE_COUNTER.name(), "Phản biện"
         );
 
         if (request.getMembers().size() < 3) {
@@ -148,10 +164,19 @@ public class BoardServiceImpl implements BoardService {
                 throw new IllegalArgumentException("Giảng viên ID " + m.getLecturerId() + " bị trùng trong danh sách.");
             }
 
-            if (uniqueRoles.contains(m.getRole())) {
+            if (requiredRoles.contains(m.getRole())) {
                 if (!seenRoles.add(m.getRole())) {
-                    throw new IllegalArgumentException("Vai trò '" + m.getRole() + "' đã được gán cho người khác.");
+                    String friendlyName = roleDisplayNames.getOrDefault(m.getRole(), m.getRole());
+                    throw new IllegalArgumentException("Vai trò '" + friendlyName + "' đã được gán cho người khác.");
                 }
+            }
+        }
+
+        // ✅ Kiểm tra thiếu vai trò nào
+        for (String requiredRole : requiredRoles) {
+            if (!seenRoles.contains(requiredRole)) {
+                String friendlyName = roleDisplayNames.getOrDefault(requiredRole, requiredRole);
+                throw new IllegalArgumentException("Thiếu vai trò bắt buộc: '" + friendlyName + "'.");
             }
         }
 
@@ -167,6 +192,6 @@ public class BoardServiceImpl implements BoardService {
         }
 
         return savedBoard;
-
     }
+
 }

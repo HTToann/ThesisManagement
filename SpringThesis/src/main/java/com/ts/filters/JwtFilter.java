@@ -24,7 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
- * @author huu-thanhduong
+
  */
 public class JwtFilter implements Filter {
 
