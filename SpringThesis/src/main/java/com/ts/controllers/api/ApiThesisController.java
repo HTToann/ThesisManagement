@@ -33,7 +33,7 @@ public class ApiThesisController {
     public ResponseEntity<?> getThesesForUser(@PathVariable("userId") int userId) {
         try {
             List<Thesis> result = thesisService.getThesesByUserId(userId);
-            if (result == null || result.isEmpty()) {
+            if (result == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(Map.of("error", "Không tìm thấy khóa luận cho userId: " + userId));
             }

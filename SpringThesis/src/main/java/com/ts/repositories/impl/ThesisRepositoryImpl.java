@@ -98,16 +98,21 @@ public class ThesisRepositoryImpl implements ThesisRepository {
     @Override
     public List<Thesis> getThesesByUserId(int userId) {
         Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
 
         // --- Query 1: user là giảng viên ---
-        CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Thesis> lecturerQuery = cb.createQuery(Thesis.class);
         Root<ThesisLecturer> lecturerRoot = lecturerQuery.from(ThesisLecturer.class);
         Join<ThesisLecturer, Thesis> thesisJoinLecturer = lecturerRoot.join("thesis");
         Join<ThesisLecturer, Users> userJoinLecturer = lecturerRoot.join("users");
 
         lecturerQuery.select(thesisJoinLecturer)
-                .where(cb.equal(userJoinLecturer.get("userId"), userId));
+                .where(
+                        cb.and(
+                                cb.equal(userJoinLecturer.get("userId"), userId),
+                                cb.isFalse(thesisJoinLecturer.get("status")) // ✅ status = false
+                        )
+                );
 
         List<Thesis> lecturerResults = session.createQuery(lecturerQuery).getResultList();
 
@@ -118,7 +123,12 @@ public class ThesisRepositoryImpl implements ThesisRepository {
         Join<Student, Thesis> thesisJoinStudent = studentRoot.join("thesisId");
 
         studentQuery.select(thesisJoinStudent)
-                .where(cb.equal(userJoinStudent.get("userId"), userId));
+                .where(
+                        cb.and(
+                                cb.equal(userJoinStudent.get("userId"), userId),
+                                cb.isFalse(thesisJoinStudent.get("status")) // ✅ status = false
+                        )
+                );
 
         List<Thesis> studentResults = session.createQuery(studentQuery).getResultList();
 
