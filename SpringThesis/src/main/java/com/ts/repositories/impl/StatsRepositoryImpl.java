@@ -4,6 +4,7 @@
  */
 package com.ts.repositories.impl;
 
+import com.ts.enumRole.BoardRole;
 import com.ts.pojo.Board;
 import com.ts.pojo.BoardMember;
 import com.ts.pojo.Major;
@@ -101,12 +102,29 @@ public class StatsRepositoryImpl implements StatsRepository {
 
         List<Tuple> results = session.createQuery(cq).getResultList();
 
+//        Map<String, String> roleDisplayMap = Map.of(
+//                "ROLE_CHAIRMAIN", "Chủ tịch",
+//                "ROLE_SECRETARY", "Thư ký",
+//                "ROLE_COUNTER", "Phản biện",
+//                "ROLE_MEMBERS", "Thành viên"
+//        );
+        Map<String, String> roleDisplayMap = Map.of(
+                BoardRole.ROLE_CHAIRMAIN.name(), "Chủ tịch",
+                BoardRole.ROLE_SECRETARY.name(), "Thư ký",
+                BoardRole.ROLE_COUNTER.name(), "Phản biện",
+                BoardRole.ROLE_MEMBERS.name(),"Thành viên"
+        );
+        
         List<Map<String, Object>> summaries = new ArrayList<>();
         for (Tuple tuple : results) {
             Map<String, Object> row = new HashMap<>();
+            String roleCode = (String) tuple.get("roleInBoard");
+
             row.put("lecturerName", tuple.get("firstName") + " " + tuple.get("lastName"));
             row.put("avgScore", tuple.get("avgScore"));
-            row.put("role", tuple.get("roleInBoard"));
+            row.put("role", roleCode);  // Giữ nguyên code nếu cần
+            row.put("roleDisplay", roleDisplayMap.getOrDefault(roleCode, roleCode));  // ✅ Thêm tên thân thiện
+
             summaries.add(row);
         }
 

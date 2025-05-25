@@ -5,8 +5,10 @@
 package com.ts.controllers.api;
 
 //import com.ts.controllers.*;
+import com.ts.pojo.Thesis;
 import com.ts.services.PdfExportService;
 import com.ts.services.StatsService;
+import com.ts.services.ThesisService;
 import com.ts.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -35,10 +37,12 @@ public class ApiStatsController {
     @Autowired
     private StatsService statsService;
     @Autowired
+    private ThesisService thesisService;
+    @Autowired
     private PdfExportService pdfService;
 
     @GetMapping("/thesis")
-    public ResponseEntity<?> exportStatsPdf() {
+    public ResponseEntity<?> Stats() {
         if (!AuthUtils.hasAnyRole("ROLE_MINISTRY", "ROLE_ADMIN")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Bạn không có quyền"));
@@ -84,7 +88,7 @@ public class ApiStatsController {
     }
 
     @GetMapping("/pdf/board-summary")
-    public ResponseEntity<?> exportBoardSummary(
+    public ResponseEntity<?> exportBoardSummaryPdf(
             @RequestParam("board_id") int boardId,
             @RequestParam("thesis_id") int thesisId) {
         if (!AuthUtils.hasAnyRole("ROLE_MINISTRY", "ROLE_ADMIN")) {
@@ -116,10 +120,14 @@ public class ApiStatsController {
 //            thesisId=6;
             List<Map<String, Object>> stats = statsService.getGradesSummaryByBoardAndThesis(boardId, thesisId);
             int year = java.time.LocalDate.now().getYear();
+            Thesis t = this.thesisService.getThesisById(thesisId);
+            String title = t.getTitle();
+            String semester = t.getSemester();
+            Double score = t.getScore();
             String currentDate = java.time.LocalDate.now()
                     .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-            byte[] pdfBytes = pdfService.exportBoardSummaryToPdf(stats, year, currentDate, boardId);
+            byte[] pdfBytes = pdfService.exportBoardSummaryToPdf(stats, year, currentDate, boardId,title,semester,score);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);

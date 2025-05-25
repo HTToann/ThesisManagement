@@ -72,15 +72,24 @@ public class BoardMemberServiceImpl implements BoardMemberService {
         int lecturerId = member.getUsers().getUserId();
         String role = member.getRoleInBoard();
         List<BoardMember> existingMembers = repo.getBoardMembersByBoardId(boardId);
+        
         Set<String> boardRoles = Set.of(
                 BoardRole.ROLE_CHAIRMAIN.name(),
                 BoardRole.ROLE_SECRETARY.name(),
                 BoardRole.ROLE_COUNTER.name(),
                 BoardRole.ROLE_MEMBERS.name()
         );
+
+        Map<String, String> roleDisplayNames = Map.of(
+                BoardRole.ROLE_CHAIRMAIN.name(), "Chủ tịch",
+                BoardRole.ROLE_SECRETARY.name(), "Thư ký",
+                BoardRole.ROLE_COUNTER.name(), "Phản biện"
+        );
+        
         if (!boardRoles.contains(role)) {
             throw new IllegalArgumentException("Vai trò không hợp lệ. Chỉ được chọn: ROLE_CHAIRMAIN, ROLE_SECRETARY, ROLE_COUNTER, ROLE_MEMBERS.");
         }
+        
         if (existingMembers.size() >= 5) {
             throw new IllegalArgumentException("Hội đồng đã đủ 5 thành viên.");
         }
@@ -89,8 +98,10 @@ public class BoardMemberServiceImpl implements BoardMemberService {
             if (bm.getUsers().getUserId().equals(lecturerId)) {
                 throw new IllegalArgumentException("Giảng viên này đã có trong hội đồng.");
             }
-            if (bm.getRoleInBoard().equalsIgnoreCase(role)) {
-                throw new IllegalArgumentException("Vai trò '" + role + "' đã được sử dụng.");
+            if (!"ROLE_MEMBERS".equalsIgnoreCase(role)
+                    && bm.getRoleInBoard().equalsIgnoreCase(role)) {
+                String friendlyName = roleDisplayNames.getOrDefault(role, role);
+                throw new IllegalArgumentException("Vai trò '" + friendlyName + "' đã được sử dụng trong hội đồng.");
             }
         }
         List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);

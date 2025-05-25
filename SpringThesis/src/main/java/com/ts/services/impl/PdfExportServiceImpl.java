@@ -67,12 +67,16 @@ public class PdfExportServiceImpl implements PdfExportService {
     }
 
     @Override
-    public byte[] exportBoardSummaryToPdf(List<Map<String, Object>> summaries, int year, String currentDate, int boardID) {
+    public byte[] exportBoardSummaryToPdf(List<Map<String, Object>> summaries, int year, String currentDate, int boardID, String title, String semester, Double score) {
         Context context = new Context();
         context.setVariable("summaries", summaries);
         context.setVariable("year", year);
         context.setVariable("currentDate", currentDate);
         context.setVariable("boardID", boardID);
+        context.setVariable("title", title);
+        context.setVariable("semester", semester);
+        context.setVariable("score", score);
+
         String htmlContent = templateEngine.process("board-summary-pdf", context);
 
         ITextRenderer renderer = new ITextRenderer();
