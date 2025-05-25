@@ -98,8 +98,8 @@ public class BoardServiceImpl implements BoardService {
             // 🔒 Khóa tất cả các đề tài thuộc hội đồng này
             List<Thesis> theses = thesisRepo.getThesesByBoardId(boardId);
             for (Thesis t : theses) {
-//                t.setIsLocked(Boolean.TRUE);
-//                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
+                t.setStatus(Boolean.TRUE);
+                thesisRepo.addOrUpdate(t); // Gọi update để lưu lại
                 // 🔍 Tìm student thuộc thesis này
                 // Cập nhật điểm cho khóa luận
                 List<ThesisGrade> grades = thesisGradeRepo.getByThesisId(t.getThesisId());

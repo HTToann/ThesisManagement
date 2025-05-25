@@ -59,6 +59,8 @@ public class Thesis implements Serializable {
     @Size(max = 50)
     @Column(name = "semester")
     private String semester;
+    @Column(name = "status")
+    private Boolean status;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "score")
     private Double score;
@@ -74,6 +76,7 @@ public class Thesis implements Serializable {
     private Date createdAt;
     @Column(name = "is_locked")
     private Boolean isLocked;
+    
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "thesis")
     private Set<ThesisGrade> thesisGradeSet;
@@ -197,17 +200,17 @@ public class Thesis implements Serializable {
     public String toString() {
         return "com.ts.pojo.Thesis[ thesisId=" + thesisId + " ]";
     }
+    public Double getScore() {
+        return score;
+    }
+    public void setScore(Double score) {
+        this.score = score;
+    }
 
-    /**
-     * @return the semester
-     */
     public String getTitle() {
         return title;
     }
 
-    /**
-     * @param semester the semester to set
-     */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -236,12 +239,12 @@ public class Thesis implements Serializable {
         this.semester = semester;
     }
 
-    public Double getScore() {
-        return score;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
 }

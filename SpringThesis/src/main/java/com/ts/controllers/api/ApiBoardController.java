@@ -74,7 +74,7 @@ public class ApiBoardController {
         }
         try {
             Board b = boardService.updateBoard(id, payload);
-            return ResponseEntity.ok(b);
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         } catch (Exception ex) {
