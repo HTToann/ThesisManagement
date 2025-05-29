@@ -69,8 +69,6 @@ ThesisManagement/
    - Deploy the generated WAR file to your preferred servlet container (e.g., Tomcat, Payara, etc.)
    - Or run directly if supported.
 
-6. **Access API Documentation**
-   - Visit `http://localhost:8080/swagger-ui/` for OpenAPI/Swagger docs.
 
 ## Main Dependencies
 
@@ -82,10 +80,3 @@ ThesisManagement/
 - Cloudinary SDK
 - Springdoc OpenAPI & Swagger UI
 
-## Contribution
-
-Contributions are welcome! Fork this repo and submit a pull request.
-
-## License
-
-This project is for academic purposes. License can be specified here.
