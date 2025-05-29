@@ -11,7 +11,6 @@ A web application for managing academic theses, built with Spring Framework, Jak
 - Templating with Thymeleaf
 - PDF export functionality (using Flying Saucer)
 - Email notifications (SMTP support)
-- OpenAPI documentation (Swagger UI integration)
 - Cloudinary integration for media uploads
 
 ## Project Structure
